@@ -1,0 +1,70 @@
+% ============ GESTION DE PROJET ============
+\chapter*{Gestion de projet}
+\addcontentsline{toc}{chapter}{Gestion de projet}
+
+\section{Composition de l'équipe}
+
+Groupe TimeX : Rafelimanana Deraniaina (Project owner), Khanh-Phuong NGUYEN, HAJJAJ Houda, EL KILI Rim.
+
+\section{Répartition des tâches}
+
+La répartition des tâches proposée pour le groupe est la suivante :
+
+\subsection{Membre A : Plateforme et OS}
+\begin{itemize}
+    \item Configuration Zephyr (devicetree, overlays, Kconfig) pour le nRF5340 DK, l'écran et le module RTC.
+    \item Intégration des drivers de base (display, input, RTC, GPIO).
+    \item Mise en place de la machine d'états générale et des threads Zephyr associés.
+\end{itemize}
+
+\subsection{Membre B : Capteurs et BLE}
+\begin{itemize}
+    \item Intégration du module \texttt{sensor} de Zephyr avec le shield X-NUCLEO-IKS01A3 (LSM6DSO, LIS2MDL, capteurs environnementaux).
+    \item Traitement des données (podomètre, boussole, température, etc.).
+    \item Mise en œuvre de la communication BLE (services, caractéristiques, protocole d'échange avec le smartphone).
+\end{itemize}
+
+\subsection{Membre C : Interface graphique et UX}
+\begin{itemize}
+    \item Conception des écrans avec SquareLine Studio (watchfaces, menus, écrans capteurs, réglages).
+    \item Intégration LVGL dans Zephyr et gestion des événements tactiles.
+    \item Affichage des notifications et des données de capteurs dans l'interface.
+\end{itemize}
+
+Une phase commune de tests et d'intégration globale est prévue, impliquant tous les membres.
+
+\section{Suivi des tâches}
+
+Le tableau ci-dessous permet de suivre l'avancement par membre et par tâche (à compléter en cours de projet).
+
+\begin{longtable}{|p{3.5cm}|p{5cm}|c|c|c|}
+\caption{Suivi de l'avancement des tâches par membre}\label{tab:suivi_taches} \\
+\hline
+\textbf{Membre} & \textbf{Tâche} & \textbf{Fait} & \textbf{Implanté} & \textbf{Validé} \\ \hline
+\endfirsthead
+
+\hline
+\textbf{Membre} & \textbf{Tâche} & \textbf{Fait} & \textbf{Implanté} & \textbf{Validé} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+Membre A & Config. Zephyr (devicetree, overlays, Kconfig) & -- & -- & -- \\ \hline
+Membre A & Drivers de base (display, input, RTC, GPIO) & -- & -- & -- \\ \hline
+Membre A & Machine d'états et threads Zephyr & -- & -- & -- \\ \hline
+Membre B & Module sensor + shield IKS01A3 & -- & -- & -- \\ \hline
+Membre B & Traitement données (podomètre, boussole, etc.) & -- & -- & -- \\ \hline
+Membre B & Communication BLE & -- & -- & -- \\ \hline
+Membre C & Écrans SquareLine Studio (watchfaces, menus) & -- & -- & -- \\ \hline
+Membre C & Intégration LVGL et tactile & -- & -- & -- \\ \hline
+Membre C & Affichage notifications et données capteurs & -- & -- & -- \\ \hline
+Tous & Tests et intégration globale & -- & -- & -- \\ \hline
+Tous & Rédaction du rapport & -- & -- & -- \\ \hline
+
+\end{longtable}
+
+\newpage

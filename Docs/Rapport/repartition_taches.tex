@@ -1,0 +1,30 @@
+% ============ RÉPARTITION DES TÂCHES ============
+\chapter{Répartition des tâches}
+
+La répartition des tâches proposée pour un groupe de trois personnes pourrait être la suivante :
+
+\section{Membre A : Plateforme et OS}
+
+\begin{itemize}
+    \item Configuration Zephyr (devicetree, overlays, Kconfig) pour le nRF5340 DK, l'écran et le module RTC.
+    \item Intégration des drivers de base (display, input, RTC, GPIO).
+    \item Mise en place de la machine d'états générale et des threads Zephyr associés.
+\end{itemize}
+
+\section{Membre B : Capteurs et BLE}
+
+\begin{itemize}
+    \item Intégration du module \texttt{sensor} de Zephyr avec le shield X-NUCLEO-IKS01A3 (LSM6DSO, LIS2MDL, capteurs environnementaux).
+    \item Traitement des données (podomètre, boussole, température, etc.).
+    \item Mise en œuvre de la communication BLE (services, caractéristiques, protocole d'échange avec le smartphone).
+\end{itemize}
+
+\section{Membre C : Interface graphique et UX}
+
+\begin{itemize}
+    \item Conception des écrans avec SquareLine Studio (watchfaces, menus, écrans capteurs, réglages).
+    \item Intégration LVGL dans Zephyr et gestion des événements tactiles.
+    \item Affichage des notifications et des données de capteurs dans l'interface.
+\end{itemize}
+
+Une phase commune de tests et d'intégration globale est prévue, impliquant tous les membres.

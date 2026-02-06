@@ -1,0 +1,118 @@
+% Rapport de projet SEC 2025 - Montre connectée nRF5340
+% Mise en forme inspirée du modèle Station Météo STM32
+% Structure en plusieurs fichiers .tex
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{makecell}
+\usetikzlibrary{shapes,arrows,automata,positioning}
+\usepackage{mwe}
+% hyperref en dernier pour que les liens (sommaire, refs) restent cliquables
+\usepackage[hidelinks]{hyperref}
+
+\geometry{a4paper, left=25mm, right=25mm, top=30mm, bottom=30mm}
+\setlength{\headheight}{15pt}
+\definecolor{bordeaux}{RGB}{128,0,32}
+
+% Configuration des titres
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\centering}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% En-têtes et pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{Montre connectée nRF5340}
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Configuration pour les listages de code
+\lstset{
+    language=C,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black!30},
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    escapeinside={\%*}{*)},
+    morekeywords={GPIO_InitTypeDef, TIM_HandleTypeDef, k_thread, k_work, device_get_binding}
+}
+
+\begin{document}
+
+\input{titlepage}
+\input{page_blanche}
+
+% ============ TABLE DES MATIÈRES ============
+\chapter*{\contentsname}
+\addcontentsline{toc}{chapter}{\contentsname}
+\vspace{-3em}
+\begin{center}
+\begin{minipage}{0.92\textwidth}
+\begin{oframed}
+\makeatletter
+\renewcommand{\tableofcontents}{\@starttoc{toc}}
+\tableofcontents
+\makeatother
+\end{oframed}
+\end{minipage}
+\end{center}
+\vspace{0em}
+\listoffigures
+\listoftables
+\newpage
+
+\input{analyse}
+\input{specifications_externes}
+\input{modelisation}
+\input{developpement_validation}
+\input{ihm}
+\input{gestion_projet}
+\input{conclusion}
+
+\end{document}

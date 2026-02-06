@@ -1,0 +1,34 @@
+% ============ TESTS ET VALIDATION ============
+\chapter{Tests et validation}
+
+\section{Stratégie de test}
+
+La validation de la montre repose sur plusieurs niveaux :
+\begin{itemize}
+    \item Tests unitaires des drivers Zephyr (capteurs, écran, RTC, BLE) pour vérifier les communications matérielles (I\textsuperscript{2}C, SPI, GPIO).
+    \item Tests d'intégration pour valider la cohérence entre machine d'états, interface graphique LVGL et services BLE.
+    \item Tests système sur cible réelle (nRF5340 DK + shield IKS01A3 + écran) pour évaluer les performances, la réactivité et la consommation.
+\end{itemize}
+
+\section{Cas de test principaux}
+
+Exemples de cas de test :
+\begin{itemize}
+    \item Vérification de l'affichage correct de l'heure et de la date après configuration de la RTC et après synchronisation BLE.
+    \item Test de la détection de mouvements (réveil de l'écran, comptage de pas) et comparaison grossière avec un podomètre de référence.
+    \item Test de la boussole : vérification qualitative de la direction affichée par rapport à une boussole physique.
+    \item Test des notifications : réception d'un SMS ou d'une notification d'application et affichage sur la montre.
+    \item Test des modes basse consommation : mesure approximative de la consommation dans différents états (veille, affichage actif, BLE actif).
+\end{itemize}
+
+\section{Critères de validation}
+
+Le projet sera considéré comme validé si :
+\begin{itemize}
+    \item Les fonctionnalités minimales imposées (Zephyr, LVGL, capteurs, BLE, RTC) sont opérationnelles.
+    \item L'interface utilisateur permet une navigation fluide entre les principales applications.
+    \item La machine d'états fonctionne sans blocage (pas de deadlock, comportement cohérent).
+    \item La consommation reste compatible avec une utilisation sur batterie (ordre de grandeur raisonnable au vu du matériel de développement).
+\end{itemize}
+
+\newpage

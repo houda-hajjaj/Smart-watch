@@ -1,0 +1,43 @@
+% ============ FONCTIONNALITÉS ============
+\chapter{Fonctionnalités possibles d'une montre connectée}
+
+Dans cette section, nous présentons un ensemble de fonctionnalités possibles, inspirées des montres existantes et des capacités offertes par notre matériel (nRF5340 DK, shield IKS01A3, écran TFT, BLE, RTC).
+
+\begin{table}[H]
+\centering
+\caption{Tableau des fonctionnalités de la montre connectée}
+\label{tab:fonctionnalites}
+\small
+\begin{tabular}{p{2.8cm}p{10.8cm}}
+\toprule
+\textbf{Catégorie} & \textbf{Fonctionnalité} \\
+\midrule
+Base & Affichage de l'heure et de la date (format 12/24h), basé sur la RTC RV-8263-C8. \\
+Base & Affichage du niveau de batterie et indication de charge. \\
+Base & Alarmes, minuteur et chronomètre. \\
+Base & Plusieurs cadrans (watchfaces) sélectionnables, comme dans ZSWatch (thèmes minimalistes, analogiques, numériques). \\
+\midrule
+Capteurs & Podomètre et estimation de distance parcourue à partir de l'accéléromètre LSM6DSO. \\
+Capteurs & Détection de gestes simples (rotation du poignet pour réveiller l'écran, tap, double-tap, changement d'orientation). \\
+Capteurs & Boussole numérique et indication de direction à partir du magnétomètre LIS2MDL. \\
+Capteurs & Mesure et affichage de la température, de l'humidité relative et de la pression atmosphérique (capteurs HTS221, LPS22HH). \\
+Capteurs & Détection d'activité (marche, repos) et éventuellement détection de chute simple à partir des données IMU. \\
+\midrule
+BLE & Synchronisation de l'heure et de la date avec le smartphone via BLE. \\
+BLE & Réception de notifications (SMS, appels, messages d'applications) et affichage sous forme de pop-up sur la montre. \\
+BLE & Synchronisation des données de capteurs (nombre de pas, température, etc.) vers une application mobile. \\
+BLE & Contrôle multimédia basique (play/pause, piste suivante/précédente, volume) pour le lecteur du smartphone. \\
+\midrule
+IHM (LVGL) & Menus graphiques pour naviguer entre les applications (horloge, capteurs, réglages, activité). \\
+IHM (LVGL) & Écrans dédiés aux capteurs : graphe de l'accélération, boussole, météo locale. \\
+IHM (LVGL) & Réglages de la montre : choix du cadran, réglage manuel de l'heure, format de date, unités (°C/°F, km/miles). \\
+IHM (LVGL) & Gestion du tactile (boutons virtuels, sliders) conçue avec SquareLine Studio et intégrée dans LVGL. \\
+\midrule
+Avancées & Modes d'économie d'énergie (désactivation radio, réduction de la fréquence de rafraîchissement des capteurs et de l'écran). \\
+Avancées & Journalisation locale des données de capteurs (mémoire externe éventuelle) pour une synchronisation différée. \\
+Avancées & Utilisation de la montre comme balise BLE (direction finding), inspiré de ZSWatch. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage

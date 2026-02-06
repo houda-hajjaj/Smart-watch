@@ -1,0 +1,156 @@
+% ============ ANALYSE DU PROJET ============
+\chapter{Analyse du projet}
+
+\section{Contexte et référence ZSWatch}
+
+Le projet ZSWatch propose une montre entièrement open source, basée sur un module u-blox NORA-B10 intégrant un SoC nRF5340, un écran circulaire 240×240 tactile, une IMU, une mémoire externe et une interface haptique. Sur le plan logiciel, il utilise Zephyr RTOS, un ensemble d'applications (watchfaces, notifications, musique, boussole, etc.) et une communication BLE avec l'application Android GadgetBridge.
+
+Notre projet reprend les grandes briques fonctionnelles (OS temps réel, UI graphique, capteurs, Bluetooth, RTC) en les adaptant au matériel disponible (nRF5340 DK, shield IKS01A3, écran TFT 320×240, RTC RV-8263-C8).
+
+\section{Éléments principaux et schéma bloc}
+
+Les fonctions principales retenues sont :
+\begin{itemize}
+    \item Système de base : SoC nRF5340 (double cœur Cortex-M33), mémoire interne, alimentation batterie.
+    \item Interface utilisateur : écran TFT 320×240 tactile, piloté via SPI, framework LVGL pour l'interface graphique.
+    \item Capteurs de mouvement et d'environnement : LSM6DSO (accéléromètre + gyroscope) et LIS2MDL (magnétomètre), ainsi que les capteurs de température, humidité et pression du shield X-NUCLEO-IKS01A3.
+    \item Communication : Bluetooth Low Energy pour la liaison avec un smartphone.
+    \item Gestion du temps : module RTC externe RV-8263-C8 pour l'heure et le calendrier.
+    \item Gestion de l'énergie : mesure du niveau de batterie et modes basse consommation (sleep, deep sleep).
+\end{itemize}
+
+Le schéma bloc de la figure~\ref{fig:schema_bloc} résume l'architecture : le nRF5340 au centre, les périphériques connectés (écran, capteurs, RTC, batterie), la liaison BLE avec le smartphone et les entrées utilisateur.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    block/.style={rectangle, draw, minimum width=1.8cm, minimum height=0.7cm, align=center, font=\small},
+    central/.style={rectangle, draw, minimum width=2.2cm, minimum height=0.9cm, align=center, font=\small\bfseries, fill=gray!15},
+    link/.style={->, >=stealth, thick}
+]
+% Bloc central
+\node[central] (mcu) {nRF5340};
+
+% Périphériques autour du MCU
+\node[block, above left=1.2cm and 1.5cm of mcu] (tft) {Écran TFT\\SPI};
+\node[block, above=1.2cm of mcu] (shield) {Shield\\IKS01A3\\I²C};
+\node[block, above right=1.2cm and 1.5cm of mcu] (rtc) {RTC\\SPI};
+\node[block, below left=1cm and 0.8cm of mcu] (bat) {Batterie};
+\node[block, below right=1cm and 0.8cm of mcu] (user) {Touch\\Boutons};
+
+% Smartphone + BLE
+\node[block, right=2.8cm of mcu] (phone) {Smartphone};
+\node[above=0.1cm of phone, font=\scriptsize] {BLE};
+
+% Connexions vers nRF5340
+\draw[link] (tft) -- (mcu);
+\draw[link] (shield) -- (mcu);
+\draw[link] (rtc) -- (mcu);
+\draw[link] (bat) -- (mcu);
+\draw[link] (user) -- (mcu);
+\draw[link, <->] (mcu) -- node[above, font=\scriptsize] {BLE} (phone);
+\end{tikzpicture}
+\caption{Schéma bloc du système (montre connectée nRF5340)}
+\label{fig:schema_bloc}
+\end{figure}
+
+\section{Contraintes et choix logiciels}
+
+Zephyr impose une structuration par devicetree et overlays pour décrire le hardware, par Kconfig pour activer les modules (BLE, capteurs, display, RTC) et par une organisation en modules et threads pour structurer l'application. Le framework LVGL est utilisé pour l'interface graphique, avec génération d'écrans via SquareLine Studio et intégration dans Zephyr.
+
+La machine d'états fournie dans le cours SEC servira de base pour organiser les modes de la montre (veille, heure, menu, activité, synchronisation, configuration), avec une séparation claire entre logique d'application et drivers matériels.
+
+\section{Tables des entrées et sorties}
+
+Les entrées du système incluent : capteurs du shield (LSM6DSO, LIS2MDL, HTS221, LPS22HH), écran tactile, boutons, module RTC. Les sorties incluent : affichage LCD, LED, communication BLE. Les tableaux ci-dessous résument les entrées et sorties.
+
+\begin{table}[H]
+\centering
+\caption{Entrées du système}
+\label{tab:entrees}
+\small
+\begin{tabular}{p{3.5cm}p{10cm}}
+\toprule
+\textbf{Entrée} & \textbf{Description / Interface} \\
+\midrule
+LSM6DSO & Accéléromètre + gyroscope (shield IKS01A3, I²C) \\
+LIS2MDL & Magnétomètre (shield IKS01A3, I²C) \\
+HTS221 & Température et humidité (shield IKS01A3, I²C) \\
+LPS22HH & Pression atmosphérique (shield IKS01A3, I²C) \\
+Écran tactile & Détection des appuis (SPI / GPIO) \\
+Boutons & Commande utilisateur (GPIO) \\
+Module RTC (RV-8263-C8) & Heure et calendrier (SPI) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Sorties du système}
+\label{tab:sorties}
+\small
+\begin{tabular}{p{3.5cm}p{10cm}}
+\toprule
+\textbf{Sortie} & \textbf{Description / Interface} \\
+\midrule
+Écran LCD TFT & Affichage graphique (SPI, LVGL) \\
+LED & Indication d'état (GPIO) \\
+Communication BLE & Liaison avec smartphone \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Adresses I²C des capteurs (IKS01A3 et RTC)}
+
+Le shield X-NUCLEO-IKS01A3 et le module RTC utilisent le bus I²C. Les adresses 7 bits par défaut sont rappelées dans le tableau~\ref{tab:adresses_i2c} (références constructeurs : ST, Micro Crystal).
+
+\begin{table}[H]
+\centering
+\caption{Périphériques et adresses I²C (7 bits, par défaut)}
+\label{tab:adresses_i2c}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Périphérique} & \textbf{Type} & \textbf{Bus I²C (typique)} & \textbf{Adresse I²C 7 bits} \\
+\midrule
+LSM6DSO      & IMU 6 axes (accéléro + gyroscope) & I²C2 (IKS01A3) & 0x6A ou 0x6B (selon ponts) \\
+LIS2DW12     & Accéléromètre 3 axes basse conso  & I²C2 (IKS01A3) & 0x18 ou 0x19 (selon SA0 ; IKS01A3 : 0x19) \\
+LIS2MDL      & Magnétomètre 3 axes               & I²C1 (IKS01A3) & 0x1E \\
+LPS22HH      & Pression + température            & I²C1 (IKS01A3) & 0x5D \\
+HTS221       & Humidité + température            & I²C1 (IKS01A3) & 0x5F \\
+STTS751      & Température numérique             & I²C1 (IKS01A3) & 0x39 \\
+RV-8263-C8   & RTC (heure + calendrier)          & I²C (carte RTC) & 0x51 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Brochage écran ILI9341 (nRF5340 DK)}
+
+L'écran TFT 320×240 (contrôleur ILI9341) est connecté via le connecteur Arduino de la nRF5340 DK. Le tableau~\ref{tab:pin_ecran} indique l'affectation des broches pour l'écran (overlay «~écran seul~» ou \texttt{watch\_full.overlay} : RST, DC, CS sur D8, D9, D10 ; SPI4 sur D11--D13). En configuration empilée (shield IKS01A3 entre la DK et l'écran), l'overlay \texttt{watch\_full\_stacked.overlay} utilise RST, DC, CS sur D2, D3, D4 (P1.4--P1.6), le SPI restant sur P1.13 et P1.15.
+
+\begin{table}[H]
+\centering
+\caption{Brochage écran ILI9341 sur nRF5340 DK (connecteur Arduino)}
+\label{tab:pin_ecran}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Signal écran} & \textbf{Broche DK (Arduino)} & \textbf{GPIO nRF5340} & \textbf{Rôle} \\
+\midrule
+VCC / 3V3 & 3,3\,V & -- & Alimentation \\
+GND       & GND     & -- & Masse commune \\
+CS        & D10     & P1.12 & Chip Select (actif bas) \\
+DC (RS/A0)& D9      & P1.11 & Data / Command \\
+RST       & D8      & P1.10 & Reset (actif bas) \\
+MOSI      & D11 (SPI) & P1.13 & Données MCU $\rightarrow$ écran \\
+MISO      & D12 (SPI) & P1.14 & Optionnel (write-only) \\
+SCK       & D13 (SPI) & P1.15 & Horloge SPI \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{1cm}
+\noindent \textbf{Accès au code source :} \\
+Lien du dépôt Git : \url{https://github.com/votre-repo/montre-nrf5340.git}
+
+\newpage

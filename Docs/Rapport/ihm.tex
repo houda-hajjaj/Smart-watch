@@ -1,0 +1,34 @@
+% ============ IHM ============
+\chapter{Interface Homme-Machine (IHM)}
+
+\section{Choix technologiques}
+
+Pour l'interface graphique sur écran TFT 320×240 (SPI), deux choix sont envisageables :
+\begin{itemize}
+    \item \textbf{LVGL} (Light and Versatile Graphics Library) : open source, intégré nativement à Zephyr et au nRF Connect SDK, léger et adapté aux MCU à ressources limitées. La conception des écrans peut être réalisée avec SquareLine Studio puis intégrée au projet.
+    \item \textbf{TouchGFX} (ST) : framework graphique avec designer intégré et rendu soigné, mais conçu pour l'écosystème STM32 ; son utilisation sur nRF5340 avec Zephyr nécessite de \emph{créer} une couche HAL (driver) qui envoie le framebuffer vers l'écran via l'API Display Zephyr ou un driver SPI personnalisé.
+\end{itemize}
+Le projet retient \textbf{LVGL} pour profiter de l'intégration Zephyr/nRF et limiter la charge de développement (pas de HAL custom à maintenir). Un squelette de pont TouchGFX--Zephyr est toutefois documenté dans le dépôt (\texttt{docs/TOUCHGFX\_INTEGRATION.md}) pour une éventuelle migration ultérieure.
+
+\section{Structure de l'interface}
+
+L'IHM permet de naviguer entre les applications (horloge, capteurs, réglages, activité) via des menus graphiques. Les écrans dédiés aux capteurs (graphe d'accélération, boussole, météo locale) et les réglages (choix du cadran, heure, format de date, unités) sont gérés par des widgets LVGL et des événements tactiles (boutons virtuels, sliders).
+
+\section{Affichage des données}
+
+Les données des capteurs (heure, température, humidité, pression, pas, direction) et les notifications BLE sont affichées sur l'écran. L'architecture sépare la logique d'acquisition, le traitement des données et la couche d'affichage pour une maintenance facilitée.
+
+\section{Machine d'états de l'IHM}
+
+La machine d'états de l'interface décrit les écrans et les transitions (tactile, boutons) entre horloge, menus, capteurs et réglages. Le schéma ci-dessous illustre la ME de l'IHM.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img_ihm/me_ihm.png}{%
+        \includegraphics[width=\linewidth]{img_ihm/me_ihm.png}%
+    }{\fbox{\parbox{0.8\linewidth}{\centering\vspace{2cm}Image à ajouter : \texttt{img\_ihm/me\_ihm.png}\vspace{2cm}}}}
+    \caption{Machine d'états de l'IHM}
+    \label{fig:me_ihm}
+\end{figure}
+
+\newpage

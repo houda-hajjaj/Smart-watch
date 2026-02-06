@@ -1,0 +1,60 @@
+% ============ MODÉLISATION DU SYSTÈME ============
+\chapter{Modélisation du système}
+
+% ----- Image 1 : 3.1 Bords du modèle -----
+\section{Bords du modèle}
+
+Cette section décrit les frontières du système : entrées (capteurs, utilisateur, communication) et sorties (écran, LED, stockage, communication). Le schéma ci-dessous illustre le nRF5340 au centre, connecté à l'écran TFT, au shield IKS01A3, au module RTC et aux interfaces BLE.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img_modelisation/1_bords_modele.png}{%
+        \includegraphics[width=\linewidth]{img_modelisation/1_bords_modele.png}%
+    }{\fbox{\parbox{0.8\linewidth}{\centering\vspace{2cm}Image à ajouter : \texttt{1\_bords\_modele.png}\vspace{2cm}}}}
+    \caption{Bords du modèle}
+    \label{fig:bords_modele}
+\end{figure}
+
+% ----- Image 2 : 3.3 Flot de données -----
+\section{Flot de données}
+
+Description du flux des données depuis les capteurs et les entrées utilisateur vers le traitement (Zephyr, machine d'états) et les sorties (affichage LVGL, BLE, stockage).
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img_modelisation/2_flot_donnees.png}{%
+        \includegraphics[width=\linewidth]{img_modelisation/2_flot_donnees.png}%
+    }{\fbox{\parbox{0.8\linewidth}{\centering\vspace{2cm}Image à ajouter : \texttt{2\_flot\_donnees.png}\vspace{2cm}}}}
+    \caption{Flot de données}
+    \label{fig:flot_donnees}
+\end{figure}
+
+% ----- Image 3 : 3.4 Flot d'événements -----
+\section{Flot d'événements}
+
+Les événements (tactile, boutons, alarmes RTC, données BLE) déclenchent des traitements et des changements d'état. Le schéma ci-dessous décrit le flot d'événements.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img_modelisation/3_flot_evenements.png}{%
+        \includegraphics[width=\linewidth]{img_modelisation/3_flot_evenements.png}%
+    }{\fbox{\parbox{0.8\linewidth}{\centering\vspace{2cm}Image à ajouter : \texttt{3\_flot\_evenements.png}\vspace{2cm}}}}
+    \caption{Flot d'événements}
+    \label{fig:flot_evenements}
+\end{figure}
+
+% ----- Image 4 : Machine d'états -----
+\section{Machine d'états}
+
+La machine d'états organise les modes de la montre (veille, heure, menu, activité, synchronisation, configuration), avec une séparation claire entre logique d'application et drivers matériels.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img_modelisation/4_machine_etats.png}{%
+        \includegraphics[width=\linewidth]{img_modelisation/4_machine_etats.png}%
+    }{\fbox{\parbox{0.8\linewidth}{\centering\vspace{2cm}Image à ajouter : \texttt{4\_machine\_etats.png}\vspace{2cm}}}}
+    \caption{Machine d'états de gestion du système}
+    \label{fig:machine_etats}
+\end{figure}
+
+\newpage

@@ -1,0 +1,55 @@
+% ============ SPÉCIFICATIONS EXTERNES ============
+\chapter{Spécifications externes}
+
+\section{Objectifs du projet}
+
+L'objectif de ce projet est de concevoir et réaliser une montre connectée complète basée sur un système embarqué nRF5340 et Zephyr RTOS. La montre doit :
+\begin{itemize}
+    \item Exploiter un écran graphique tactile et le framework LVGL
+    \item Intégrer les capteurs de mouvement et d'environnement (shield X-NUCLEO-IKS01A3)
+    \item Assurer une connectivité Bluetooth Low Energy avec un smartphone
+    \item Gérer l'heure et le calendrier via un module RTC externe
+\end{itemize}
+
+\section{Fonctionnalités possibles}
+
+Le tableau ci-dessous résume les fonctionnalités envisagées pour la montre, par catégorie.
+
+\begin{table}[H]
+\centering
+\caption{Tableau des fonctionnalités de la montre connectée}
+\label{tab:fonctionnalites}
+\small
+\begin{tabular}{p{2.8cm}p{10.8cm}}
+\toprule
+\textbf{Catégorie} & \textbf{Fonctionnalité} \\
+\midrule
+Base & Affichage de l'heure et de la date (format 12/24h), basé sur la RTC RV-8263-C8. \\
+Base & Affichage du niveau de batterie et indication de charge. \\
+Base & Alarmes, minuteur et chronomètre. \\
+Base & Plusieurs cadrans (watchfaces) sélectionnables (thèmes minimalistes, analogiques, numériques). \\
+\midrule
+Capteurs & Podomètre et estimation de distance (accéléromètre LSM6DSO). \\
+Capteurs & Détection de gestes (réveil écran, tap, double-tap). \\
+Capteurs & Boussole numérique (magnétomètre LIS2MDL). \\
+Capteurs & Température, humidité, pression (HTS221, LPS22HH). \\
+Capteurs & Détection d'activité (marche, repos) et éventuellement chute (IMU). \\
+\midrule
+BLE & Synchronisation heure/date avec le smartphone. \\
+BLE & Réception de notifications (SMS, appels, applications). \\
+BLE & Synchronisation des données de capteurs vers une application mobile. \\
+BLE & Contrôle multimédia (play/pause, volume). \\
+\midrule
+IHM & Menus graphiques (horloge, capteurs, réglages, activité). \\
+IHM & Écrans capteurs : accélération, boussole, météo. \\
+IHM & Réglages : cadran, heure, date, unités. \\
+IHM & Tactile (SquareLine Studio, LVGL). \\
+\midrule
+Avancées & Modes économie d'énergie. \\
+Avancées & Journalisation locale, synchronisation différée. \\
+Avancées & Balise BLE (direction finding). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
