@@ -1,0 +1,7 @@
+west:
+  command: /opt/nordic/ncs/toolchains/5c0d382932/bin/west build --build-dir /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build
+    /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch --pristine --board
+    nrf5340dk/nrf5340/cpuapp -- -DDEBUG_THREAD_INFO=On -DCONFIG_DEBUG_THREAD_INFO=y
+    -DSHIELD=x_nucleo_iks01a3 -DZSWatch_DEBUG_THREAD_INFO=On
+  topdir: /opt/nordic/ncs/v3.1.0
+  version: 1.4.0
