@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch-complete.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-build.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-configure.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-download.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-install.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-mkdir.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-patch.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ZSWatch"
+		],
+		"name" : "ZSWatch"
+	}
+}

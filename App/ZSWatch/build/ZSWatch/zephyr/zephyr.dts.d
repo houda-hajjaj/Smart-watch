@@ -35,4 +35,7 @@ empty_file.o: /opt/nordic/ncs/v3.1.0/zephyr/misc/empty_file.c \
  /opt/nordic/ncs/v3.1.0/zephyr/dts/vendor/nordic/nrf5340_cpuapp_partition.dtsi \
  /opt/nordic/ncs/v3.1.0/zephyr/dts/vendor/nordic/nrf5340_shared_sram_partition.dtsi \
  /opt/nordic/ncs/v3.1.0/zephyr/boards/shields/x_nucleo_iks01a3/x_nucleo_iks01a3.overlay \
+ /opt/nordic/ncs/v3.1.0/zephyr/boards/shields/adafruit_2_8_tft_touch_v2/adafruit_2_8_tft_touch_v2.overlay \
+ /opt/nordic/ncs/v3.1.0/zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi \
+ /opt/nordic/ncs/v3.1.0/zephyr/include/zephyr/dt-bindings/display/ili9xxx.h \
  /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay
