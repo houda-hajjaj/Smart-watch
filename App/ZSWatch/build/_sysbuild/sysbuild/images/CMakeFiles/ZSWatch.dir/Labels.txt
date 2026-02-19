@@ -1,0 +1,13 @@
+# Target labels
+ ZSWatch
+# Source files and their labels
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/CMakeFiles/ZSWatch-complete.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-build.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-configure.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-download.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-install.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-mkdir.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-patch.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/sysbuild/images/ZSWatch-prefix/src/ZSWatch-stamp/ZSWatch-update.rule

@@ -1,0 +1,22 @@
+cmake:
+  board:
+    name: 'nrf5340dk'
+    path:
+     - 'C:/ncs/v3.1.0/zephyr/boards/nordic/nrf5340dk'
+    qualifiers: 'nrf5340/cpunet'
+    revision: ''
+  images:
+   - name: 'hci_ipc'
+     source-dir: 'C:/ncs/v3.1.0/zephyr/samples/bluetooth/hci_ipc'
+     type: 'MAIN'
+  kconfig:
+    files:
+     - 'C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/empty.conf'
+     - 'C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/empty.conf'
+    user-files:
+     - 'C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/empty.conf'
+version: '0.1.0'
+west:
+  command: 'C:\ncs\toolchains\b8b84efebd\opt\bin\Scripts\west build -b nrf5340dk/nrf5340/cpunet C:\ncs\v3.1.0\zephyr\samples\bluetooth\hci_ipc --pristine --build-dir build_hci_ipc'
+  topdir: 'C:\ncs\v3.1.0'
+  version: '1.4.0'

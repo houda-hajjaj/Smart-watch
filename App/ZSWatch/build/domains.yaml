@@ -1,0 +1,7 @@
+default: ZSWatch
+build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build
+domains:
+  - name: ZSWatch
+    build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch
+flash_order:
+  - ZSWatch

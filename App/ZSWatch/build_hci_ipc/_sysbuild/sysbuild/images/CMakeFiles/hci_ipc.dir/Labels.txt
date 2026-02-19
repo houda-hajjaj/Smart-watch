@@ -1,0 +1,13 @@
+# Target labels
+ hci_ipc
+# Source files and their labels
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/CMakeFiles/hci_ipc
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/CMakeFiles/hci_ipc.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/CMakeFiles/hci_ipc-complete.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-build.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-configure.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-download.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-install.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-mkdir.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-patch.rule
+C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/_sysbuild/sysbuild/images/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-update.rule

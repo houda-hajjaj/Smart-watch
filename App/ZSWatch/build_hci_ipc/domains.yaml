@@ -1,0 +1,7 @@
+default: hci_ipc
+build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc
+domains:
+  - name: hci_ipc
+    build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build_hci_ipc/hci_ipc
+flash_order:
+  - hci_ipc
