@@ -10,30 +10,39 @@
 
 LOG_MODULE_REGISTER(ble, LOG_LEVEL_INF);
 
-/* UUIDs standard */
+/* ==================== UUIDs standard ==================== */
 #define BT_UUID_ESS_VAL              0x181A  // Environmental Sensing Service
 #define BT_UUID_TEMPERATURE_VAL       0x2A6E
 #define BT_UUID_HUMIDITY_VAL           0x2A6F
-#define BT_UUID_PRESSURE_VAL           0x2A6D  // Pression en pascals (ou 0.01 hPa)
+#define BT_UUID_PRESSURE_VAL           0x2A6D  // Pression en pascals
 #define BT_UUID_MAGNETIC_FLUX_3D_VAL   0x2AA0
-#define BT_UUID_ACCELEROMETER_3D_VAL   0x2AA1  // Accélération 3 axes
+#define BT_UUID_ACCELEROMETER_3D_VAL   0x2AA1
 
-/* Déclaration des UUID */
+/* ==================== UUIDs pour Current Time Service ==================== */
+#define BT_UUID_CTS_VAL                0x1805  // Current Time Service
+#define BT_UUID_CURRENT_TIME_VAL        0x2A2B  // Current Time characteristic
+
+/* Déclaration des UUID 16 bits */
 static const struct bt_uuid_16 ess_uuid = BT_UUID_INIT_16(BT_UUID_ESS_VAL);
 static const struct bt_uuid_16 temp_uuid = BT_UUID_INIT_16(BT_UUID_TEMPERATURE_VAL);
 static const struct bt_uuid_16 humi_uuid = BT_UUID_INIT_16(BT_UUID_HUMIDITY_VAL);
 static const struct bt_uuid_16 press_uuid = BT_UUID_INIT_16(BT_UUID_PRESSURE_VAL);
 static const struct bt_uuid_16 mag_uuid = BT_UUID_INIT_16(BT_UUID_MAGNETIC_FLUX_3D_VAL);
 static const struct bt_uuid_16 accel_uuid = BT_UUID_INIT_16(BT_UUID_ACCELEROMETER_3D_VAL);
+static const struct bt_uuid_16 cts_uuid = BT_UUID_INIT_16(BT_UUID_CTS_VAL);
+static const struct bt_uuid_16 current_time_uuid = BT_UUID_INIT_16(BT_UUID_CURRENT_TIME_VAL);
 
-/* Variables pour stocker les valeurs */
+/* ==================== Variables pour les données capteurs ==================== */
 static int16_t temp_value;
 static uint16_t humi_value;
 static uint32_t press_value;          // Pression en pascals
 static int16_t mag_value[3];
 static int16_t accel_value[3];
 
-/* Callbacks CCC (pour tracer l'activation des notifications) */
+/* ==================== Variable pour l'heure (timestamp Unix simplifié) ==================== */
+static uint32_t current_time; // secondes depuis 1970 (timestamp Unix)
+
+/* ==================== Callbacks CCC pour les notifications ==================== */
 static void temp_ccc_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
     LOG_INF("Notifications température %s", (value == BT_GATT_CCC_NOTIFY) ? "activées" : "désactivées");
@@ -59,7 +68,7 @@ static void accel_ccc_changed(const struct bt_gatt_attr *attr, uint16_t value)
     LOG_INF("Notifications accélération %s", (value == BT_GATT_CCC_NOTIFY) ? "activées" : "désactivées");
 }
 
-/* Fonctions de lecture (optionnelles) */
+/* ==================== Fonctions de lecture pour les caractéristiques ==================== */
 static ssize_t read_temp(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                          void *buf, uint16_t len, uint16_t offset)
 {
@@ -90,40 +99,65 @@ static ssize_t read_accel(struct bt_conn *conn, const struct bt_gatt_attr *attr,
     return bt_gatt_attr_read(conn, attr, buf, len, offset, accel_value, sizeof(accel_value));
 }
 
-/* Définition du service GATT (ESS avec 5 caractéristiques) */
+/* ==================== Callback d'écriture pour la caractéristique Current Time ==================== */
+static ssize_t write_current_time(struct bt_conn *conn,
+                                   const struct bt_gatt_attr *attr,
+                                   const void *buf, uint16_t len, uint16_t offset,
+                                   uint8_t flags)
+{
+    LOG_INF("write_current_time called with len=%d", len);
+    if (len != sizeof(current_time)) {
+        LOG_ERR("Invalid length: %d (expected %d)", len, sizeof(current_time));
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+    }
+    memcpy(&current_time, buf, sizeof(current_time));
+    LOG_INF("Heure reçue via BLE : %u (timestamp Unix)", current_time);
+    return len;
+}
+
+/* ==================== Lecture de la caractéristique Current Time ==================== */
+static ssize_t read_current_time(struct bt_conn *conn,
+                                   const struct bt_gatt_attr *attr,
+                                   void *buf, uint16_t len, uint16_t offset)
+{
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &current_time, sizeof(current_time));
+}
+
+/* ==================== Définition des services GATT ==================== */
+
+/* Service Environmental Sensing (ESS) */
 BT_GATT_SERVICE_DEFINE(sensor_svc,
-    /* Service primaire ESS */
     BT_GATT_PRIMARY_SERVICE(&ess_uuid),
 
-    /* --- Température --- */
+    /* Température */
     BT_GATT_CHARACTERISTIC(&temp_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_temp, NULL, &temp_value),
     BT_GATT_CCC(temp_ccc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 
-    /* --- Humidité --- */
+    /* Humidité */
     BT_GATT_CHARACTERISTIC(&humi_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_humi, NULL, &humi_value),
     BT_GATT_CCC(humi_ccc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 
-    /* --- Pression --- */
+    /* Pression */
     BT_GATT_CHARACTERISTIC(&press_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_press, NULL, &press_value),
     BT_GATT_CCC(press_ccc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 
-    /* --- Magnétomètre (3 axes) --- */
+    /* Magnétomètre */
     BT_GATT_CHARACTERISTIC(&mag_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_mag, NULL, mag_value),
     BT_GATT_CCC(mag_ccc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 
-    /* --- Accéléromètre (3 axes) --- */
+    /* Accéléromètre */
     BT_GATT_CHARACTERISTIC(&accel_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
@@ -131,14 +165,23 @@ BT_GATT_SERVICE_DEFINE(sensor_svc,
     BT_GATT_CCC(accel_ccc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 );
 
-/* Récupération des attributs pour les notifications (index après chaque caractéristique) */
+/* Service Current Time (CTS) */
+BT_GATT_SERVICE_DEFINE(cts_svc,
+    BT_GATT_PRIMARY_SERVICE(&cts_uuid),
+    BT_GATT_CHARACTERISTIC(&current_time_uuid.uuid,
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+                           BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
+                           read_current_time, write_current_time, &current_time),
+);
+
+/* Récupération des attributs pour les notifications (ESS) */
 #define TEMP_ATTR  (&sensor_svc.attrs[2])
 #define HUMI_ATTR  (&sensor_svc.attrs[5])
 #define PRESS_ATTR (&sensor_svc.attrs[8])
 #define MAG_ATTR   (&sensor_svc.attrs[11])
 #define ACCEL_ATTR (&sensor_svc.attrs[14])
 
-/* Callbacks de connexion */
+/* ==================== Callbacks de connexion ==================== */
 static void connected(struct bt_conn *conn, uint8_t err)
 {
     if (err) {
@@ -158,17 +201,19 @@ BT_CONN_CB_DEFINE(conn_callbacks) = {
     .disconnected = disconnected,
 };
 
-/* Publicité */
+/* ==================== Publicité ==================== */
 static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, sizeof(CONFIG_BT_DEVICE_NAME)-1),
 };
 
 static const struct bt_data sd[] = {
-    BT_DATA_BYTES(BT_DATA_UUID16_ALL, BT_UUID_ESS_VAL & 0xFF, BT_UUID_ESS_VAL >> 8),
+    BT_DATA_BYTES(BT_DATA_UUID16_ALL,
+                  BT_UUID_ESS_VAL & 0xFF, BT_UUID_ESS_VAL >> 8,
+                  BT_UUID_CTS_VAL & 0xFF, BT_UUID_CTS_VAL >> 8),
 };
 
-/* Initialisation */
+/* ==================== Initialisation ==================== */
 void ble_init(void)
 {
     int err;
@@ -192,7 +237,7 @@ void ble_init(void)
     }
 }
 
-/* Fonctions de mise à jour et notification */
+/* ==================== Mise à jour des données capteurs ==================== */
 void ble_update_temperature(int16_t temp_100)
 {
     temp_value = temp_100;
@@ -231,4 +276,10 @@ void ble_update_acceleration(int16_t x_100, int16_t y_100, int16_t z_100)
     accel_value[1] = y_100;
     accel_value[2] = z_100;
     bt_gatt_notify(NULL, ACCEL_ATTR, accel_value, sizeof(accel_value));
+}
+
+/* ==================== Fonction pour obtenir l'heure (pour la RTC) ==================== */
+uint32_t ble_get_current_time(void)
+{
+    return current_time;
 }
