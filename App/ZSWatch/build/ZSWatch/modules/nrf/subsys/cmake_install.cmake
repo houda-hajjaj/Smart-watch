@@ -87,3 +87,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/mgmt/mcumgr/cmake_install.cmake")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/settings/cmake_install.cmake")
+endif()
+

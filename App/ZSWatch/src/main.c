@@ -17,10 +17,7 @@ int main(void) {
     }
 
     // Initialisation BLE
-    if (ble_init() != 0) {
-        printf("Erreur d'initialisation BLE.\n");
-        return -1;
-    }
+    ble_init(); // Ne retourne pas de code d'erreur (log interne)
 
     while (1) {
         printf("\033[H\033[J"); // Rafraîchit la console
@@ -49,23 +46,30 @@ int main(void) {
                sensor_value_to_double(&mag.magn[1]),
                sensor_value_to_double(&mag.magn[2]));
 
-        // --- Préparation des données pour BLE (format CSV) ---
-        char buffer[128];
-        int len = snprintf(buffer, sizeof(buffer),
-            "%.1f,%.1f,%.3f,%.1f,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f",
-            sensor_value_to_double(&env.temp_hts),
-            sensor_value_to_double(&env.humidity),
-            sensor_value_to_double(&env.pressure),
-            sensor_value_to_double(&env.temp_lps),
-            sensor_value_to_double(&imu.accel[0]),
-            sensor_value_to_double(&imu.accel[1]),
-            sensor_value_to_double(&imu.accel[2]),
-            sensor_value_to_double(&mag.magn[0]),
-            sensor_value_to_double(&mag.magn[1]),
-            sensor_value_to_double(&mag.magn[2]));
+        // --- Envoi des données via BLE (caractéristiques standard) ---
 
-        // Envoi des données via BLE (notification)
-        ble_notify_sensor_data((uint8_t*)buffer, len);
+        // Température HTS221 (°C * 100)
+        ble_update_temperature((int16_t)(sensor_value_to_double(&env.temp_hts) * 100));
+
+        // Humidité (% * 100)
+        ble_update_humidity((uint16_t)(sensor_value_to_double(&env.humidity) * 100));
+
+        // Pression : conversion kPa -> Pa (x1000)
+        ble_update_pressure((uint32_t)(sensor_value_to_double(&env.pressure) * 1000));
+
+        // Accélération (G * 100, à ajuster selon l'unité souhaitée)
+        ble_update_acceleration(
+            (int16_t)(sensor_value_to_double(&imu.accel[0]) * 100),
+            (int16_t)(sensor_value_to_double(&imu.accel[1]) * 100),
+            (int16_t)(sensor_value_to_double(&imu.accel[2]) * 100)
+        );
+
+        // Magnétomètre (µT * 100, à ajuster)
+        ble_update_magnetometer(
+            (int16_t)(sensor_value_to_double(&mag.magn[0]) * 100),
+            (int16_t)(sensor_value_to_double(&mag.magn[1]) * 100),
+            (int16_t)(sensor_value_to_double(&mag.magn[2]) * 100)
+        );
 
         k_sleep(K_MSEC(2000));
     }
