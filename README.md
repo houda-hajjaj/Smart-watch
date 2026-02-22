@@ -23,6 +23,9 @@ This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using 
 - Tested with nRF Connect for Mobile – data appears in real‑time after subscribing.
 
 ##  Quick Test
+Prebuild:
+Add -DSHIELD=x_nucleo_iks01a3;adafruit_2_8_tft_touch_v2 to your build configuration to include the necessary drivers for the sensors and display.
+
 1. Build and flash the application:
    ```bash
    west build -b nrf5340dk/nrf5340/cpuapp --pristine
