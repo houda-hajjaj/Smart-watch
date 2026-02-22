@@ -10,8 +10,8 @@ int env_init(EnvSensor *s) {
         return -1;
     }
 
-    // Configuration de la fréquence du LPS22HH à 100 Hz
-    struct sensor_value odr = { .val1 = 100, .val2 = 0 };
+    // Configuration de la fréquence du LPS22HH à 1 Hz (Low Power)
+    struct sensor_value odr = { .val1 = 1, .val2 = 0 };
     sensor_attr_set(s->lps22hh, SENSOR_CHAN_ALL, SENSOR_ATTR_SAMPLING_FREQUENCY, &odr);
 
     return 0;
