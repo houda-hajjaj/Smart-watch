@@ -4,17 +4,22 @@
 #include "mag_sensor.h"
 #include "env_sensor.h"
 #include "ble.h"
+#include "step_counter.h"
 
 int main(void) {
     MotionSensor imu;
     MagSensor mag;
     EnvSensor env;
+    StepCounter steps;
 
     // Initialisation des capteurs
     if (motion_init(&imu) != 0 || mag_init(&mag) != 0 || env_init(&env) != 0) {
         printf("Erreur d'initialisation des capteurs.\n");
         return -1;
     }
+
+    // Initialisation du compteur de pas
+    step_counter_init(&steps);
 
     // Initialisation BLE
     ble_init(); // Ne retourne pas de code d'erreur (log interne)
@@ -45,6 +50,11 @@ int main(void) {
                sensor_value_to_double(&mag.magn[0]),
                sensor_value_to_double(&mag.magn[1]),
                sensor_value_to_double(&mag.magn[2]));
+        
+                       // Mise à jour du compteur de pas
+        step_counter_update(&steps, imu.accel);
+        printf("\nPedometre: %u pas (mag: %.2f g)\n",
+               step_counter_get_steps(&steps), steps.last_magnitude);
 
         // --- Envoi des données via BLE (caractéristiques standard) ---
 
