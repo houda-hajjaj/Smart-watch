@@ -1574,7 +1574,6 @@ zephyr_udc0: &usbd {
 # 8 "/opt/nordic/ncs/v3.1.0/zephyr/boards/shields/adafruit_2_8_tft_touch_v2/adafruit_2_8_tft_touch_v2.overlay" 2
 # 0 "<command-line>" 2
 # 1 "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay" 1
-# 10 "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay"
 &arduino_i2c {
  status = "okay";
 

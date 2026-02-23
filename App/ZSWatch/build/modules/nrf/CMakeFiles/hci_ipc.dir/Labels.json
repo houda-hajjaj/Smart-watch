@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc-complete.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-build.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-configure.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-download.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-install.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-mkdir.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-patch.rule"
+		},
+		{
+			"file" : "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"hci_ipc"
+		],
+		"name" : "hci_ipc"
+	}
+}

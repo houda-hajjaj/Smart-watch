@@ -1,0 +1,13 @@
+# Target labels
+ hci_ipc
+# Source files and their labels
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/CMakeFiles/hci_ipc-complete.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-build.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-configure.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-download.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-install.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-mkdir.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-patch.rule
+/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/modules/nrf/hci_ipc-prefix/src/hci_ipc-stamp/hci_ipc-update.rule
