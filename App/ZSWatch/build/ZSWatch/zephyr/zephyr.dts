@@ -275,7 +275,7 @@
 				reg = < 0x9000 0x1000 >;        /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:159 */
 				interrupts = < 0x9 0x1 >;       /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:160 */
 				easydma-maxcnt-bits = < 0x10 >; /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:161 */
-				status = "okay";                /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:11 */
+				status = "okay";                /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:2 */
 				zephyr,pm-device-runtime-auto;  /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:163 */
 				pinctrl-0 = < &i2c1_default >;  /* in zephyr/boards/nordic/nrf5340dk/nrf5340_cpuapp_common.dtsi:98 */
 				pinctrl-1 = < &i2c1_sleep >;    /* in zephyr/boards/nordic/nrf5340dk/nrf5340_cpuapp_common.dtsi:99 */
@@ -331,11 +331,11 @@
 					phandle = < 0x17 >;              /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:17 */
 				};
 
-				/* node '/soc/peripheral@50000000/i2c@9000/lis2de12@18' defined in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:13 */
+				/* node '/soc/peripheral@50000000/i2c@9000/lis2de12@18' defined in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:4 */
 				lis2de18_18_x_nucleo_iks01a3: lis2de12@18 {
-					compatible = "st,lis2de12";               /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:14 */
-					reg = < 0x18 >;                           /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:15 */
-					int1-gpios = < &arduino_header 0x5 0x0 >; /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:16 */
+					compatible = "st,lis2de12";               /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:5 */
+					reg = < 0x18 >;                           /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:6 */
+					int1-gpios = < &arduino_header 0x5 0x0 >; /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:7 */
 				};
 			};
 
@@ -478,7 +478,7 @@
 			/* node '/soc/peripheral@50000000/timer@f000' defined in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:294 */
 			timer0: timer@f000 {
 				compatible = "nordic,nrf-timer"; /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:295 */
-				status = "okay";                 /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:24 */
+				status = "okay";                 /* in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:15 */
 				reg = < 0xf000 0x1000 >;         /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:297 */
 				cc-num = < 0x6 >;                /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:298 */
 				max-bit-width = < 0x20 >;        /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:299 */

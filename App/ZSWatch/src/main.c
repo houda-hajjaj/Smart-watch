@@ -3,8 +3,8 @@
 #include "motion_sensor.h"
 #include "mag_sensor.h"
 #include "env_sensor.h"
-#include "ble.h"
 #include "step_counter.h"
+#include "ble_service.h"
 
 int main(void) {
     MotionSensor imu;
@@ -22,7 +22,10 @@ int main(void) {
     step_counter_init(&steps);
 
     // Initialisation BLE
-    ble_init(); // Ne retourne pas de code d'erreur (log interne)
+    if (ble_service_init() != 0) {
+        printf("Erreur d'initialisation BLE.\n");
+        // Continue quand même sans BLE
+    }
 
     while (1) {
         printf("\033[H\033[J"); // Rafraîchit la console
@@ -50,38 +53,36 @@ int main(void) {
                sensor_value_to_double(&mag.magn[0]),
                sensor_value_to_double(&mag.magn[1]),
                sensor_value_to_double(&mag.magn[2]));
-        
-                       // Mise à jour du compteur de pas
+
+        // Mise à jour du compteur de pas
         step_counter_update(&steps, imu.accel);
         printf("\nPedometre: %u pas (mag: %.2f g)\n",
                step_counter_get_steps(&steps), steps.last_magnitude);
 
-        // --- Envoi des données via BLE (caractéristiques standard) ---
+        // ── Envoi BLE ──
+        // Formats BLE SIG : temp=0.01°C, hum=0.01%, press=0.1Pa
+        struct ble_sensor_data ble_data = {
+            .temperature = (int16_t)(sensor_value_to_double(&env.temp_hts) * 100),
+            .humidity    = (uint16_t)(sensor_value_to_double(&env.humidity) * 100),
+            .pressure    = (uint32_t)(sensor_value_to_double(&env.pressure) * 10000), /* kPa → 0.1 Pa */
+            .accel = {
+                (int16_t)(sensor_value_to_double(&imu.accel[0]) * 1000),
+                (int16_t)(sensor_value_to_double(&imu.accel[1]) * 1000),
+                (int16_t)(sensor_value_to_double(&imu.accel[2]) * 1000),
+            },
+            .magn = {
+                (int16_t)(sensor_value_to_double(&mag.magn[0]) * 1000),
+                (int16_t)(sensor_value_to_double(&mag.magn[1]) * 1000),
+                (int16_t)(sensor_value_to_double(&mag.magn[2]) * 1000),
+            },
+            .steps = step_counter_get_steps(&steps),
+        };
+        ble_service_update(&ble_data);
 
-        // Température HTS221 (°C * 100)
-        ble_update_temperature((int16_t)(sensor_value_to_double(&env.temp_hts) * 100));
+        printf("BLE: %s\n",
+               ble_service_is_connected() ? "Connecte" : "En attente...");
 
-        // Humidité (% * 100)
-        ble_update_humidity((uint16_t)(sensor_value_to_double(&env.humidity) * 100));
-
-        // Pression : conversion kPa -> Pa (x1000)
-        ble_update_pressure((uint32_t)(sensor_value_to_double(&env.pressure) * 1000));
-
-        // Accélération (G * 100, à ajuster selon l'unité souhaitée)
-        ble_update_acceleration(
-            (int16_t)(sensor_value_to_double(&imu.accel[0]) * 100),
-            (int16_t)(sensor_value_to_double(&imu.accel[1]) * 100),
-            (int16_t)(sensor_value_to_double(&imu.accel[2]) * 100)
-        );
-
-        // Magnétomètre (µT * 100, à ajuster)
-        ble_update_magnetometer(
-            (int16_t)(sensor_value_to_double(&mag.magn[0]) * 100),
-            (int16_t)(sensor_value_to_double(&mag.magn[1]) * 100),
-            (int16_t)(sensor_value_to_double(&mag.magn[2]) * 100)
-        );
-
-        k_sleep(K_MSEC(2000));
+        k_sleep(K_MSEC(200));
     }
     return 0;
 }
