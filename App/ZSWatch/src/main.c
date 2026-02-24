@@ -5,12 +5,19 @@
 #include "env_sensor.h"
 #include "step_counter.h"
 #include "ble_service.h"
+#include "compass.h"
+#include "altimeter.h"          
 
 int main(void) {
     MotionSensor imu;
     MagSensor mag;
     EnvSensor env;
     StepCounter steps;
+    Compass comp;
+    Altimeter alt;              
+
+    compass_init(&comp);
+    altimeter_init(&alt);        
 
     // Initialisation des capteurs
     if (motion_init(&imu) != 0 || mag_init(&mag) != 0 || env_init(&env) != 0) {
@@ -36,13 +43,17 @@ int main(void) {
         motion_update(&imu);
         mag_update(&mag);
 
+        // Mise à jour de l'altimètre
+        altimeter_update(&alt, sensor_value_to_double(&env.pressure));
+
         // --- Affichage console ---
         printf("HTS221 : Temp: %.1f C | Hum: %.1f%%\n",
                sensor_value_to_double(&env.temp_hts),
                sensor_value_to_double(&env.humidity));
-        printf("LPS22HH: Press: %.3f kPa | Temp: %.1f C\n\n",
+        printf("LPS22HH: Press: %.3f kPa | Temp: %.1f C\n",
                sensor_value_to_double(&env.pressure),
                sensor_value_to_double(&env.temp_lps));
+        printf("Altitude: %.1f m\n\n", altimeter_get_altitude(&alt));  
 
         printf("LSM6DSO: Accel X: %.2f Y: %.2f Z: %.2f\n",
                sensor_value_to_double(&imu.accel[0]),
@@ -54,17 +65,19 @@ int main(void) {
                sensor_value_to_double(&mag.magn[1]),
                sensor_value_to_double(&mag.magn[2]));
 
+        compass_update(&comp, mag.magn);
+        printf("Boussole: %.1f°\n", compass_get_heading(&comp));
+
         // Mise à jour du compteur de pas
         step_counter_update(&steps, imu.accel);
         printf("\nPedometre: %u pas (mag: %.2f g)\n",
                step_counter_get_steps(&steps), steps.last_magnitude);
 
         // ── Envoi BLE ──
-        // Formats BLE SIG : temp=0.01°C, hum=0.01%, press=0.1Pa
         struct ble_sensor_data ble_data = {
             .temperature = (int16_t)(sensor_value_to_double(&env.temp_hts) * 100),
             .humidity    = (uint16_t)(sensor_value_to_double(&env.humidity) * 100),
-            .pressure    = (uint32_t)(sensor_value_to_double(&env.pressure) * 10000), /* kPa → 0.1 Pa */
+            .pressure    = (uint32_t)(sensor_value_to_double(&env.pressure) * 10000), 
             .accel = {
                 (int16_t)(sensor_value_to_double(&imu.accel[0]) * 1000),
                 (int16_t)(sensor_value_to_double(&imu.accel[1]) * 1000),

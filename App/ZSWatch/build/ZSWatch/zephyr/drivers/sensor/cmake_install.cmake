@@ -1,8 +1,8 @@
-# Install script for directory: /opt/nordic/ncs/v3.1.0/zephyr/drivers/sensor
+# Install script for directory: C:/ncs/v3.1.0/zephyr/drivers/sensor
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Zephyr-Kernel")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,176 +34,176 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/opt/nordic/ncs/toolchains/5c0d382932/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump")
+  set(CMAKE_OBJDUMP "C:/ncs/toolchains/b8b84efebd/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/adi/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/adi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ams/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ams/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/aosong/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/aosong/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/asahi_kasei/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/asahi_kasei/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/bosch/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/bosch/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/broadcom/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/broadcom/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/espressif/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/espressif/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/everlight/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/everlight/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/honeywell/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/honeywell/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/infineon/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/infineon/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ite/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ite/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/jedec/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/jedec/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/liteon/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/liteon/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/maxim/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/maxim/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/meas/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/meas/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/melexis/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/melexis/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/memsic/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/memsic/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/microchip/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/microchip/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nordic/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nordic/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nuvoton/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nuvoton/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nxp/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/nxp/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/pixart/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/pixart/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/pni/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/pni/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/realtek/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/realtek/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/renesas/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/renesas/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/rohm/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/rohm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/seeed/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/seeed/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/sensirion/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/sensirion/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/silabs/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/silabs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/st/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/st/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/tdk/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/tdk/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ti/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/ti/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/vishay/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/vishay/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/wsen/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/zephyr/drivers/sensor/wsen/cmake_install.cmake")
 endif()
 
