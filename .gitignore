@@ -1,0 +1,40 @@
+# Build directories
+build/
+build_*/
+build-*/
+cmake-build-*/
+**/build/
+**/cmake-build-*/
+
+# Zephyr generated files
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/Makefile
+**/compile_commands.json
+
+# Generated Zephyr outputs
+**/zephyr/.config
+**/zephyr/.config.old
+**/zephyr/zephyr.*
+**/zephyr/include/generated/
+**/zephyr/misc/generated/
+
+# Ninja
+.ninja_log
+.ninja_deps
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python cache
+*.pyc
+__pycache__/
+
+# Logs
+*.log
