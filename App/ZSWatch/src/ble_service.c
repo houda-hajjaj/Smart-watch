@@ -1,5 +1,4 @@
 #include "ble_service.h"
-
 #include <zephyr/kernel.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/hci.h>

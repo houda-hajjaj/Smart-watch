@@ -379,7 +379,7 @@
 #define CONFIG_MBEDTLS_INIT 1
 #define CONFIG_APP_LINK_WITH_MBEDTLS 1
 #define CONFIG_ZEPHYR_OBERON_PSA_CRYPTO_MODULE 1
-#define CONFIG_TFM_BOARD "C:/ncs/v3.1.0/zephyr/modules/trusted-firmware-m/nordic/nrf5340_cpuapp"
+#define CONFIG_TFM_BOARD "/opt/nordic/ncs/v3.1.0/zephyr/modules/trusted-firmware-m/nordic/nrf5340_cpuapp"
 #define CONFIG_ZEPHYR_TRUSTED_FIRMWARE_M_MODULE 1
 #define CONFIG_ZEPHYR_PSA_ARCH_TESTS_MODULE 1
 #define CONFIG_ZEPHYR_CJSON_MODULE 1
