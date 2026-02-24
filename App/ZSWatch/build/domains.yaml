@@ -1,10 +1,10 @@
 default: ZSWatch
-build_dir: /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build
+build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build
 domains:
   - name: ZSWatch
-    build_dir: /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch
+    build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch
   - name: hci_ipc
-    build_dir: /Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc
+    build_dir: C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc
 flash_order:
   - hci_ipc
   - ZSWatch

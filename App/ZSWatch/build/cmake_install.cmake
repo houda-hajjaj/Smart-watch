@@ -1,8 +1,8 @@
-# Install script for directory: /opt/nordic/ncs/v3.1.0/zephyr/share/sysbuild
+# Install script for directory: C:/ncs/v3.1.0/zephyr/share/sysbuild
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/sysbuild_toplevel")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/_sysbuild/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/_sysbuild/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
