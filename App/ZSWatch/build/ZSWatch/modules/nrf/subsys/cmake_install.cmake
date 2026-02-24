@@ -1,8 +1,8 @@
-# Install script for directory: C:/ncs/v3.1.0/nrf/subsys
+# Install script for directory: /opt/nordic/ncs/v3.1.0/nrf/subsys
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Zephyr-Kernel")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,56 +34,56 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/ncs/toolchains/b8b84efebd/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "/opt/nordic/ncs/toolchains/5c0d382932/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/bluetooth/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/bluetooth/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/nrf_security/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/nrf_security/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/net/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/net/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/dfu/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/dfu/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/mpsl/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/mpsl/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/logging/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/logging/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/shell/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/shell/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/debug/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/debug/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/partition_manager/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/partition_manager/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/mgmt/mcumgr/cmake_install.cmake")
+  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/ZSWatch/modules/nrf/subsys/mgmt/mcumgr/cmake_install.cmake")
 endif()
 

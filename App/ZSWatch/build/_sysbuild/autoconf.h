@@ -26,7 +26,7 @@
 #define SB_CONFIG_SUPPORT_NETCORE_IPC_RADIO 1
 #define SB_CONFIG_NETCORE_HCI_IPC 1
 #define SB_CONFIG_NETCORE_IMAGE_NAME "hci_ipc"
-#define SB_CONFIG_NETCORE_IMAGE_PATH "C:/ncs/v3.1.0/zephyr/samples/bluetooth/hci_ipc"
+#define SB_CONFIG_NETCORE_IMAGE_PATH "/opt/nordic/ncs/v3.1.0/zephyr/samples/bluetooth/hci_ipc"
 #define SB_CONFIG_NETCORE_IMAGE_DOMAIN "CPUNET"
 #define SB_CONFIG_SUPPORT_QSPI_XIP 1
 #define SB_CONFIG_BT_FAST_PAIR_MODEL_ID 0x1000000
