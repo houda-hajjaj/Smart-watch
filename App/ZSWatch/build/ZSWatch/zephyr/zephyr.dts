@@ -26,8 +26,8 @@
 		zephyr,sram-secure-partition = &sram0_s;             /* in zephyr/boards/nordic/nrf5340dk/nrf5340dk_nrf5340_cpuapp.dts:19 */
 		zephyr,sram-non-secure-partition = &sram0_ns;        /* in zephyr/boards/nordic/nrf5340dk/nrf5340dk_nrf5340_cpuapp.dts:20 */
 		zephyr,boot-mode = &boot_mode0;                      /* in zephyr/boards/nordic/nrf5340dk/nrf5340dk_nrf5340_cpuapp.dts:21 */
-		zephyr,display = &adafruit_2_8_tft_touch_v2_ili9340; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:11 */
-		zephyr,touch = &ft5336_adafruit_2_8_tft_touch_v2;    /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:12 */
+		zephyr,display = &adafruit_2_8_tft_touch_v2_ili9340; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:12 */
+		zephyr,touch = &tsc2007_adafruit_2_8_tft_touch_v2;   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:13 */
 	};
 
 	/* node '/aliases' defined in zephyr/dts/common/skeleton.dtsi:13 */
@@ -324,11 +324,27 @@
 					int-pin = < 0x2 >;                       /* in zephyr/boards/shields/x_nucleo_iks01a3/x_nucleo_iks01a3.overlay:52 */
 				};
 
-				/* node '/soc/peripheral@50000000/i2c@9000/ft5336@38' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:68 */
+				/* node '/soc/peripheral@50000000/i2c@9000/ft5336@38' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:78 */
 				ft5336_adafruit_2_8_tft_touch_v2: ft5336@38 {
-					compatible = "focaltech,ft5336"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:69 */
-					reg = < 0x38 >;                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:70 */
-					phandle = < 0x17 >;              /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:17 */
+					compatible = "focaltech,ft5336"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:79 */
+					reg = < 0x38 >;                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:80 */
+				};
+
+				/* node '/soc/peripheral@50000000/i2c@9000/tsc2007@48' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:87 */
+				tsc2007_adafruit_2_8_tft_touch_v2: tsc2007@48 {
+					status = "okay";                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:88 */
+					compatible = "ti,tsc2007";               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:89 */
+					reg = < 0x48 >;                          /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:90 */
+					int-gpios = < &arduino_header 0x8 0x1 >; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:92 */
+					screen-width = < 0xf0 >;                 /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:93 */
+					screen-height = < 0x140 >;               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:94 */
+					raw-x-min = < 0x190 >;                   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:95 */
+					raw-y-min = < 0x190 >;                   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:96 */
+					raw-x-max = < 0xe10 >;                   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:97 */
+					raw-y-max = < 0xe10 >;                   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:98 */
+					inverted-x;                              /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:99 */
+					inverted-y;                              /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:100 */
+					phandle = < 0x17 >;                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:19 */
 				};
 
 				/* node '/soc/peripheral@50000000/i2c@9000/lis2de12@18' defined in ../../../../Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/app.overlay:4 */
@@ -375,27 +391,27 @@
 				easydma-maxcnt-bits = < 0x10 >;          /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:197 */
 				rx-delay-supported;                      /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:198 */
 				rx-delay = < 0x2 >;                      /* in zephyr/dts/arm/nordic/nrf5340_cpuapp_peripherals.dtsi:199 */
-				status = "okay";                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:50 */
+				status = "okay";                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:60 */
 				cs-gpios = < &arduino_header 0x10 0x1 >,
-				           < &arduino_header 0xa 0x1 >;  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:51 */
+				           < &arduino_header 0xa 0x1 >;  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:61 */
 				pinctrl-0 = < &spi4_default >;           /* in zephyr/boards/nordic/nrf5340dk/nrf5340_cpuapp_common.dtsi:160 */
 				pinctrl-1 = < &spi4_sleep >;             /* in zephyr/boards/nordic/nrf5340dk/nrf5340_cpuapp_common.dtsi:161 */
 				pinctrl-names = "default",
 				                "sleep";                 /* in zephyr/boards/nordic/nrf5340dk/nrf5340_cpuapp_common.dtsi:162 */
-				phandle = < 0x18 >;                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:25 */
+				phandle = < 0x18 >;                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:35 */
 
-				/* node '/soc/peripheral@50000000/spi@a000/sdhc@1' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:54 */
+				/* node '/soc/peripheral@50000000/spi@a000/sdhc@1' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:64 */
 				adafruit_2_8_tft_touch_v2_sdhc: sdhc@1 {
-					compatible = "zephyr,sdhc-spi-slot"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:55 */
-					reg = < 0x1 >;                       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:56 */
-					status = "okay";                     /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:57 */
-					spi-max-frequency = < 0x16e3600 >;   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:58 */
+					compatible = "zephyr,sdhc-spi-slot"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:65 */
+					reg = < 0x1 >;                       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:66 */
+					status = "okay";                     /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:67 */
+					spi-max-frequency = < 0x16e3600 >;   /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:68 */
 
-					/* node '/soc/peripheral@50000000/spi@a000/sdhc@1/mmc' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:59 */
+					/* node '/soc/peripheral@50000000/spi@a000/sdhc@1/mmc' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:69 */
 					mmc {
-						compatible = "zephyr,sdmmc-disk"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:60 */
-						disk-name = "SD";                 /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:61 */
-						status = "okay";                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:62 */
+						compatible = "zephyr,sdmmc-disk"; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:70 */
+						disk-name = "SD";                 /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:71 */
+						status = "okay";                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:72 */
 					};
 				};
 			};
@@ -1353,39 +1369,38 @@
 		};
 	};
 
-	/* node '/lvgl_pointer' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:15 */
+	/* node '/lvgl_pointer' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:17 */
 	lvgl_pointer {
-		compatible = "zephyr,lvgl-pointer-input";      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:16 */
-		input = < &ft5336_adafruit_2_8_tft_touch_v2 >; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:17 */
-		swap-xy;                                       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:18 */
-		invert-x;                                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:19 */
-		invert-y;                                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:20 */
+		compatible = "zephyr,lvgl-pointer-input";       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:18 */
+		input = < &tsc2007_adafruit_2_8_tft_touch_v2 >; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:19 */
+		invert-x;                                       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:21 */
+		invert-y;                                       /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:22 */
 	};
 
-	/* node '/adafruit_2_8_tft_touch_v2_mipi_dbi' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:23 */
+	/* node '/adafruit_2_8_tft_touch_v2_mipi_dbi' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:33 */
 	adafruit_2_8_tft_touch_v2_mipi_dbi: adafruit_2_8_tft_touch_v2_mipi_dbi {
-		compatible = "zephyr,mipi-dbi-spi";     /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:24 */
-		spi-dev = < &arduino_spi >;             /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:25 */
-		dc-gpios = < &arduino_header 0xf 0x0 >; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:26 */
-		write-only;                             /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:27 */
-		#address-cells = < 0x1 >;               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:28 */
-		#size-cells = < 0x0 >;                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:29 */
+		compatible = "zephyr,mipi-dbi-spi";     /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:34 */
+		spi-dev = < &arduino_spi >;             /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:35 */
+		dc-gpios = < &arduino_header 0xf 0x0 >; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:36 */
+		write-only;                             /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:37 */
+		#address-cells = < 0x1 >;               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:38 */
+		#size-cells = < 0x0 >;                  /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:39 */
 
-		/* node '/adafruit_2_8_tft_touch_v2_mipi_dbi/ili9340@0' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:31 */
+		/* node '/adafruit_2_8_tft_touch_v2_mipi_dbi/ili9340@0' defined in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:41 */
 		adafruit_2_8_tft_touch_v2_ili9340: ili9340@0 {
-			compatible = "ilitek,ili9340";                               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:32 */
-			mipi-max-frequency = < 0xe7319b >;                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:33 */
-			reg = < 0x0 >;                                               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:34 */
-			width = < 0x140 >;                                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:35 */
-			height = < 0xf0 >;                                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:36 */
-			pixel-format = < 0x1 >;                                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:37 */
-			rotation = < 0x5a >;                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:38 */
-			frmctr1 = [ 00 18 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:39 */
-			pwctrl1 = [ 23 00 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:40 */
-			vmctrl1 = [ 3E 28 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:41 */
-			vmctrl2 = [ 86 ];                                            /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:42 */
-			pgamctrl = [ 0F 31 2B 0C 0E 08 4E F1 37 07 10 03 0E 09 00 ]; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:43 */
-			ngamctrl = [ 00 0E 14 03 11 07 31 C1 48 08 0F 0C 31 36 0F ]; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:44 */
+			compatible = "ilitek,ili9340";                               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:42 */
+			mipi-max-frequency = < 0xe7319b >;                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:43 */
+			reg = < 0x0 >;                                               /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:44 */
+			width = < 0x140 >;                                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:45 */
+			height = < 0xf0 >;                                           /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:46 */
+			pixel-format = < 0x1 >;                                      /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:47 */
+			rotation = < 0x5a >;                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:48 */
+			frmctr1 = [ 00 18 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:49 */
+			pwctrl1 = [ 23 00 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:50 */
+			vmctrl1 = [ 3E 28 ];                                         /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:51 */
+			vmctrl2 = [ 86 ];                                            /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:52 */
+			pgamctrl = [ 0F 31 2B 0C 0E 08 4E F1 37 07 10 03 0E 09 00 ]; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:53 */
+			ngamctrl = [ 00 0E 14 03 11 07 31 C1 48 08 0F 0C 31 36 0F ]; /* in zephyr/boards/shields/adafruit_2_8_tft_touch_v2/dts/adafruit_2_8_tft_touch_v2.dtsi:54 */
 		};
 	};
 };
