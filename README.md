@@ -22,35 +22,35 @@ This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using 
 - Notifications sent every 2 seconds with scaled sensor values.
 - Tested with nRF Connect for Mobile – data appears in real‑time after subscribing.
 
-# Journal de bord — Projet ZSWatch
+# ZSWatch Project Log
 
-Voici un journal succinct des trois premières semaines de développement.
+This is a short log of the first three weeks of development.
 
-## Semaine 1 — Initialiser le projet et la configuration
+## Week 1 — Initialize project and configuration
 
-- Création de l'arborescence du projet et initialisation du dépôt.
-- Configuration de l'environnement Zephyr / nRF Connect SDK, ajout des fichiers `CMakeLists.txt` et `prj.conf` pour la cible `nrf5340dk`.
-- Mise en place d'une première compilation avec `west build` pour vérifier la toolchain et résoudre les dépendances.
-- Résultat : build initial réussi, configuration de base validée.
+- Created the project structure and initialized the repository.
+- Set up the Zephyr / nRF Connect SDK environment; added `CMakeLists.txt` and `prj.conf` for the `nrf5340dk` target.
+- Performed an initial build with `west build` to verify the toolchain and resolve dependencies.
+- Outcome: initial build succeeded and base configuration validated.
 
-## Semaine 2 — Terminer les capteurs et l'USART
+## Week 2 — Finish sensors and USART
 
-- Intégration des pilotes de capteurs (altimeter, compass, mag_sensor, env_sensor, motion_sensor, step_counter) et configuration I²C/SPI.
-- Mise en place des routines de lecture périodique et des conversions d'unités pour température, pression, humidité, accélération et magnétisme.
-- Implémentation d'un canal de debug via USART pour journaliser les lectures et faciliter le débogage matériel.
-- Tests matériels : lectures stables, calibrations initiales appliquées.
+- Integrated sensor drivers (altimeter, compass, mag_sensor, env_sensor, motion_sensor, step_counter) and configured I²C/SPI.
+- Implemented periodic read routines and unit conversions for temperature, pressure, humidity, acceleration and magnetism.
+- Added a USART debug channel to log readings and simplify hardware debugging.
+- Hardware tests: stable readings obtained and initial calibrations applied.
 
-## Semaine 3 — BLE
+## Week 3 — BLE
 
-- Implémentation des services BLE principaux (Environmental Sensing Service et caractéristiques associées).
-- Activation des notifications pour l'envoi périodique des mesures vers un client connecté.
-- Ajustements des buffers BLE et gestion des CCC pour fiabiliser les notifications.
-- Test avec nRF Connect (mobile) : découverte, connexion et réception des notifications OK.
+- Implemented main BLE services (Environmental Sensing Service and related characteristics).
+- Enabled notifications to periodically send measurements to a connected client.
+- Tuned BLE buffers and handled CCC properly to improve notification reliability.
+- Tested with nRF Connect (mobile): device discovery, connection and notification reception working.
 
-## Remarques et prochaines étapes
+## Notes and next steps
 
-- Intégrer l'affichage (LVGL) et une interface utilisateur simple.
-- Ajouter une gestion de l'heure (RTC) et des enregistrements historiques.
-- Envisager un service personnalisé combinant plusieurs capteurs pour simplifier le client BLE.
+- Integrate display with LVGL and a simple UI.
+- Add RTC support and local data logging.
+- Consider a custom BLE service that aggregates multiple sensors for simpler clients.
 
-Fichier mis à jour : [README.md](README.md)
+Updated file: [README.md](README.md)
