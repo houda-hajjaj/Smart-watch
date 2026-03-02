@@ -22,16 +22,35 @@ This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using 
 - Notifications sent every 2 seconds with scaled sensor values.
 - Tested with nRF Connect for Mobile – data appears in real‑time after subscribing.
 
-##  Quick Test
-Prebuild:
-Add -DSHIELD=x_nucleo_iks01a3;adafruit_2_8_tft_touch_v2 to your build configuration to include the necessary drivers for the sensors and display.
+# Journal de bord — Projet ZSWatch
 
-1. Build and flash the application:
-   ```bash
-   west build -b nrf5340dk/nrf5340/cpuapp --pristine
-   west flash
+Voici un journal succinct des trois premières semaines de développement.
 
-## Next Steps
-- Integrate display (LVGL)
-- Add RTC for calendar/time features
-- Implement custom service for combined data
+## Semaine 1 — Initialiser le projet et la configuration
+
+- Création de l'arborescence du projet et initialisation du dépôt.
+- Configuration de l'environnement Zephyr / nRF Connect SDK, ajout des fichiers `CMakeLists.txt` et `prj.conf` pour la cible `nrf5340dk`.
+- Mise en place d'une première compilation avec `west build` pour vérifier la toolchain et résoudre les dépendances.
+- Résultat : build initial réussi, configuration de base validée.
+
+## Semaine 2 — Terminer les capteurs et l'USART
+
+- Intégration des pilotes de capteurs (altimeter, compass, mag_sensor, env_sensor, motion_sensor, step_counter) et configuration I²C/SPI.
+- Mise en place des routines de lecture périodique et des conversions d'unités pour température, pression, humidité, accélération et magnétisme.
+- Implémentation d'un canal de debug via USART pour journaliser les lectures et faciliter le débogage matériel.
+- Tests matériels : lectures stables, calibrations initiales appliquées.
+
+## Semaine 3 — BLE
+
+- Implémentation des services BLE principaux (Environmental Sensing Service et caractéristiques associées).
+- Activation des notifications pour l'envoi périodique des mesures vers un client connecté.
+- Ajustements des buffers BLE et gestion des CCC pour fiabiliser les notifications.
+- Test avec nRF Connect (mobile) : découverte, connexion et réception des notifications OK.
+
+## Remarques et prochaines étapes
+
+- Intégrer l'affichage (LVGL) et une interface utilisateur simple.
+- Ajouter une gestion de l'heure (RTC) et des enregistrements historiques.
+- Envisager un service personnalisé combinant plusieurs capteurs pour simplifier le client BLE.
+
+Fichier mis à jour : [README.md](README.md)
