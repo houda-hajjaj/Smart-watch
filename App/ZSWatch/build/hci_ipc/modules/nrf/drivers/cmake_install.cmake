@@ -1,8 +1,8 @@
-# Install script for directory: /opt/nordic/ncs/v3.1.0/nrf/drivers
+# Install script for directory: C:/ncs/v3.1.0/nrf/drivers
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Zephyr-Kernel")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,36 +34,36 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/opt/nordic/ncs/toolchains/5c0d382932/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump")
+  set(CMAKE_OBJDUMP "C:/ncs/toolchains/b8b84efebd/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/entropy/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/entropy/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/flash/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/flash/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/gpio/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/gpio/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/hw_cc3xx/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/hw_cc3xx/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/mpsl/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/mpsl/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/serial/cmake_install.cmake")
+  include("C:/Users/User/Desktop/Smart_Watch/App/ZSWatch/build/hci_ipc/modules/nrf/drivers/serial/cmake_install.cmake")
 endif()
 
