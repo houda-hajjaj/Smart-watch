@@ -11572,11 +11572,6 @@ DT_COMPAT_TI_TPS382X := ti,tps382x
 config DT_HAS_TI_TPS382X_ENABLED
 	def_bool $(dt_compat_enabled,$(DT_COMPAT_TI_TPS382X))
 
-DT_COMPAT_TI_TSC2007 := ti,tsc2007
-
-config DT_HAS_TI_TSC2007_ENABLED
-	def_bool $(dt_compat_enabled,$(DT_COMPAT_TI_TSC2007))
-
 DT_COMPAT_TI_VIM := ti,vim
 
 config DT_HAS_TI_VIM_ENABLED

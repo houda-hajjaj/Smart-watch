@@ -7,7 +7,7 @@
       "operation": {
         "chip_erase_mode": "ERASE_RANGES_TOUCHED_BY_FIRMWARE",
         "firmware": {
-          "file": "/Users/nguyenphuong/Desktop/SEC/Project/Smart_Watch/App/ZSWatch/build/merged.hex"
+          "file": "C:\\Users\\User\\Desktop\\Smart_Watch\\App\\ZSWatch\\build\\merged.hex"
         },
         "type": "program",
         "verify": "VERIFY_READ"
