@@ -41,3 +41,10 @@ double compass_get_heading(const Compass *comp)
 {
     return comp->heading;
 }
+const char* compass_direction_to_str(double heading)
+{
+    const char* directions[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                                "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"};
+    int index = (int)((heading + 11.25) / 22.5) % 16;
+    return directions[index];
+}
