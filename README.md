@@ -16,6 +16,10 @@ This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using 
   - Device name: "ZSWatch".
 - **Robust communication**: Increased BLE buffers, proper CCC handling, and dual‑core setup (network core runs `hci_ipc`).
 
+
+````
+-DSHIELD=x_nucleo_iks01a3, adafruit_2_8_tft
+
 ##  Status
 - Sensors initialise correctly (I²C).
 - BLE advertising and connection functional.
