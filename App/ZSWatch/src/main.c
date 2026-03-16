@@ -1,19 +1,19 @@
 #include <zephyr/kernel.h>
 #include <stdio.h>
-#include "motion_sensor.h"
-#include "mag_sensor.h"
-#include "env_sensor.h"
-#include "step_counter.h"
-#include "ble_service.h"
-#include "compass.h"
-#include "altimeter.h"
-#include "fusion.h"
-#include "activity.h"
-#include "weather.h"
-#include "floor_counter.h"
-#include "distance.h"
-#include "calories.h"
-#include "fall_detector.h"
+#include "sensors/motion_sensor.h"
+#include "sensors/mag_sensor.h"
+#include "sensors/env_sensor.h"
+#include "processing/step_counter.h"
+#include "processing/compass.h"
+#include "processing/altimeter.h"
+#include "processing/fusion.h"
+#include "processing/activity.h"
+#include "processing/weather.h"
+#include "processing/floor_counter.h"
+#include "processing/distance.h"
+#include "processing/calories.h"
+#include "processing/fall_detector.h"
+#include "ble/ble_service.h"
 
 int main(void) {
     MotionSensor imu;
@@ -48,6 +48,7 @@ int main(void) {
     }
 
     uint32_t last_steps = 0;
+    uint32_t last_time = 0;
 
     while (1) {
         printf("\033[H\033[J");
@@ -88,7 +89,6 @@ int main(void) {
                compass_get_heading(&comp),
                compass_direction_to_str(compass_get_heading(&comp)));
 
-        static uint32_t last_time = 0;
         uint32_t now = k_uptime_get_32();
         uint32_t delta = now - last_time;
         if (last_time != 0 && delta > 0) {
