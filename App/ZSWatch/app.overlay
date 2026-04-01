@@ -1,3 +1,21 @@
+// &arduino_i2c {
+// 	status = "okay";
+// 	rv8263: rtc@51 {
+// 		compatible = "microcrystal,rv-8263-c8";
+// 		reg = <0x51>;
+// 		status = "okay";
+// 	};
+// };
+
+// &timer0 {
+// 	status = "okay";
+// };
+
+// &timer1 {
+// 	status = "okay";
+// };
+
+
 &arduino_i2c {
 	status = "okay";
 };

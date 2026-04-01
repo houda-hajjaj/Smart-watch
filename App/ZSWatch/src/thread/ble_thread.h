@@ -1,11 +1,11 @@
 #ifndef BLE_THREAD_H
 #define BLE_THREAD_H
 
-/**
- * @brief Initialise the BLE stack and GATT services.
- *        Must be called before shared_data_timers_start().
- * @return 0 on success, negative errno on failure.
- */
-int ble_thread_init(void);
+#include <stdint.h>
+
+#define BLE_THREAD_UPDATE_PERIOD_MS 50
+
+void ble_thread_start(void);
+void ble_thread_notify_sample(uint32_t sample_count);
 
 #endif /* BLE_THREAD_H */

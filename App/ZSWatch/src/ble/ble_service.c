@@ -1,26 +1,18 @@
 #include "ble_service.h"
-#include <zephyr/kernel.h>
+
+#include <string.h>
+
 #include <zephyr/bluetooth/bluetooth.h>
-#include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
+#include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <string.h>
+#include <zephyr/sys/util.h>
 
 LOG_MODULE_REGISTER(ble_service, LOG_LEVEL_INF);
 
-/* ================================================================
- *  UUIDs standards BLE SIG (nRF Connect les décode automatiquement)
- * ================================================================
- *  Service : Environmental Sensing (0x181A)
- *  Chars   : Temperature (0x2A6E), Humidity (0x2A6F), Pressure (0x2A6D)
- *
- *  Service custom : mouvement 12345678-1234-5678-1234-56789abc0000
- *  Chars   : Accel (…0004), Magn (…0005), Steps (…0006)
- * ================================================================ */
-
-/* ── UUIDs custom pour mouvement ──────────────────────────────── */
 #define BT_UUID_MOTION_SVC_VAL \
     BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abc0000)
 
@@ -33,237 +25,388 @@ LOG_MODULE_REGISTER(ble_service, LOG_LEVEL_INF);
 #define BT_UUID_CHAR_STEPS_VAL \
     BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abc0006)
 
-static struct bt_uuid_128 motion_svc_uuid = BT_UUID_INIT_128(BT_UUID_MOTION_SVC_VAL);
-static struct bt_uuid_128 accel_uuid      = BT_UUID_INIT_128(BT_UUID_CHAR_ACCEL_VAL);
-static struct bt_uuid_128 magn_uuid       = BT_UUID_INIT_128(BT_UUID_CHAR_MAGN_VAL);
-static struct bt_uuid_128 steps_uuid      = BT_UUID_INIT_128(BT_UUID_CHAR_STEPS_VAL);
+#define BT_UUID_CHAR_RTC_VAL \
+    BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abc0007)
 
-/* ================================================================
- *  Données internes
- * ================================================================ */
+#define BT_UUID_CHAR_HEADING_VAL \
+    BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abc0008)
+
+#define BT_UUID_CHAR_DIRECTION_VAL \
+    BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abc0009)
+
+#define ESS_TEMP_VAL_ATTR_IDX     2
+#define ESS_HUM_VAL_ATTR_IDX      5
+#define ESS_PRESS_VAL_ATTR_IDX    8
+#define MOTION_ACCEL_VAL_ATTR_IDX 2
+#define MOTION_MAGN_VAL_ATTR_IDX  6
+#define MOTION_STEPS_VAL_ATTR_IDX 10
+#define MOTION_RTC_VAL_ATTR_IDX   14
+#define MOTION_HEADING_VAL_ATTR_IDX 18
+#define MOTION_DIR_VAL_ATTR_IDX   22
+
+enum ble_notify_bits {
+    BLE_NOTIFY_TEMP  = BIT(0),
+    BLE_NOTIFY_HUM   = BIT(1),
+    BLE_NOTIFY_PRESS = BIT(2),
+    BLE_NOTIFY_ACCEL = BIT(3),
+    BLE_NOTIFY_MAGN  = BIT(4),
+    BLE_NOTIFY_STEPS = BIT(5),
+    BLE_NOTIFY_RTC   = BIT(6),
+    BLE_NOTIFY_HEADING = BIT(7),
+    BLE_NOTIFY_DIR   = BIT(8),
+};
+
+static struct bt_uuid_128 motion_svc_uuid = BT_UUID_INIT_128(BT_UUID_MOTION_SVC_VAL);
+static struct bt_uuid_128 accel_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_ACCEL_VAL);
+static struct bt_uuid_128 magn_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_MAGN_VAL);
+static struct bt_uuid_128 steps_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_STEPS_VAL);
+static struct bt_uuid_128 rtc_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_RTC_VAL);
+static struct bt_uuid_128 heading_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_HEADING_VAL);
+static struct bt_uuid_128 direction_uuid = BT_UUID_INIT_128(BT_UUID_CHAR_DIRECTION_VAL);
+
 static struct ble_sensor_data current_data;
 static struct bt_conn *current_conn;
+static uint32_t notify_mask;
+static bool ble_started;
 
-/* ── Flags notification (CCC) ─────────────────────────────────── */
-static bool notify_temp_enabled;
-static bool notify_hum_enabled;
-static bool notify_press_enabled;
-static bool notify_accel_enabled;
-static bool notify_magn_enabled;
-static bool notify_steps_enabled;
+K_MUTEX_DEFINE(ble_state_mutex);
 
-/* ================================================================
- *  Lecture GATT – callbacks
- * ================================================================ */
-
-/* ── Environmental Sensing chars ──────────────────────────────── */
-static ssize_t read_temp(struct bt_conn *conn,
-                         const struct bt_gatt_attr *attr,
-                         void *buf, uint16_t len, uint16_t offset)
+static ssize_t read_temperature(struct bt_conn *conn,
+                                const struct bt_gatt_attr *attr,
+                                void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.temperature,
-                             sizeof(current_data.temperature));
+    int16_t value;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    value = current_data.temperature;
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &value, sizeof(value));
 }
 
-static ssize_t read_hum(struct bt_conn *conn,
-                        const struct bt_gatt_attr *attr,
-                        void *buf, uint16_t len, uint16_t offset)
+static ssize_t read_humidity(struct bt_conn *conn,
+                             const struct bt_gatt_attr *attr,
+                             void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.humidity,
-                             sizeof(current_data.humidity));
+    uint16_t value;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    value = current_data.humidity;
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &value, sizeof(value));
 }
 
-static ssize_t read_press(struct bt_conn *conn,
-                          const struct bt_gatt_attr *attr,
-                          void *buf, uint16_t len, uint16_t offset)
+static ssize_t read_pressure(struct bt_conn *conn,
+                             const struct bt_gatt_attr *attr,
+                             void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.pressure,
-                             sizeof(current_data.pressure));
+    uint32_t value;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    value = current_data.pressure;
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &value, sizeof(value));
 }
 
-/* ── Motion chars ─────────────────────────────────────────────── */
 static ssize_t read_accel(struct bt_conn *conn,
                           const struct bt_gatt_attr *attr,
                           void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.accel,
-                             sizeof(current_data.accel));
+    int16_t value[ARRAY_SIZE(current_data.accel)];
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memcpy(value, current_data.accel, sizeof(value));
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value));
 }
 
 static ssize_t read_magn(struct bt_conn *conn,
                          const struct bt_gatt_attr *attr,
                          void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.magn,
-                             sizeof(current_data.magn));
+    int16_t value[ARRAY_SIZE(current_data.magn)];
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memcpy(value, current_data.magn, sizeof(value));
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value));
 }
 
 static ssize_t read_steps(struct bt_conn *conn,
                           const struct bt_gatt_attr *attr,
                           void *buf, uint16_t len, uint16_t offset)
 {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset,
-                             &current_data.steps,
-                             sizeof(current_data.steps));
+    uint32_t value;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    value = current_data.steps;
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &value, sizeof(value));
 }
 
-/* ── CCC changed callbacks ────────────────────────────────────── */
+static ssize_t read_rtc(struct bt_conn *conn,
+                        const struct bt_gatt_attr *attr,
+                        void *buf, uint16_t len, uint16_t offset)
+{
+    char value[BLE_RTC_TEXT_LEN];
+    size_t value_len;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memcpy(value, current_data.rtc_text, sizeof(value));
+    k_mutex_unlock(&ble_state_mutex);
+
+    value_len = strnlen(value, sizeof(value));
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, value_len);
+}
+
+static ssize_t read_heading(struct bt_conn *conn,
+                            const struct bt_gatt_attr *attr,
+                            void *buf, uint16_t len, uint16_t offset)
+{
+    uint16_t value;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    value = current_data.heading_tenths_deg;
+    k_mutex_unlock(&ble_state_mutex);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &value, sizeof(value));
+}
+
+static ssize_t read_direction(struct bt_conn *conn,
+                              const struct bt_gatt_attr *attr,
+                              void *buf, uint16_t len, uint16_t offset)
+{
+    char value[BLE_COMPASS_DIR_LEN];
+    size_t value_len;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memcpy(value, current_data.compass_direction, sizeof(value));
+    k_mutex_unlock(&ble_state_mutex);
+
+    value_len = strnlen(value, sizeof(value));
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, value_len);
+}
+
+static void set_notify_enabled(uint32_t bit, uint16_t value, const char *label)
+{
+    bool enabled = (value == BT_GATT_CCC_NOTIFY);
+    bool changed;
+    uint32_t new_mask;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    new_mask = enabled ? (notify_mask | bit) : (notify_mask & ~bit);
+    changed = (new_mask != notify_mask);
+    notify_mask = new_mask;
+    k_mutex_unlock(&ble_state_mutex);
+
+    if (changed) {
+        LOG_INF("%s notifications %s", label, enabled ? "ON" : "OFF");
+    }
+}
+
 static void ccc_temp_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_temp_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Temp notifications %s", notify_temp_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_TEMP, value, "Temp");
 }
 
 static void ccc_hum_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_hum_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Humidity notifications %s", notify_hum_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_HUM, value, "Humidity");
 }
 
 static void ccc_press_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_press_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Pressure notifications %s", notify_press_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_PRESS, value, "Pressure");
 }
 
 static void ccc_accel_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_accel_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Accel notifications %s", notify_accel_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_ACCEL, value, "Accel");
 }
 
 static void ccc_magn_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_magn_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Magn notifications %s", notify_magn_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_MAGN, value, "Magn");
 }
 
 static void ccc_steps_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
-    notify_steps_enabled = (value == BT_GATT_CCC_NOTIFY);
-    LOG_INF("Steps notifications %s", notify_steps_enabled ? "ON" : "OFF");
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_STEPS, value, "Steps");
 }
 
-/* ================================================================
- *  Service 1 : Environmental Sensing (UUID standard 0x181A)
- *  → nRF Connect affiche automatiquement "Temperature", "Humidity",
- *    "Pressure" avec les bonnes unités.
- * ================================================================ */
+static void ccc_rtc_changed(const struct bt_gatt_attr *attr, uint16_t value)
+{
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_RTC, value, "RTC");
+}
+
+static void ccc_heading_changed(const struct bt_gatt_attr *attr, uint16_t value)
+{
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_HEADING, value, "Heading");
+}
+
+static void ccc_direction_changed(const struct bt_gatt_attr *attr, uint16_t value)
+{
+    ARG_UNUSED(attr);
+    set_notify_enabled(BLE_NOTIFY_DIR, value, "Direction");
+}
+
 BT_GATT_SERVICE_DEFINE(ess_svc,
     BT_GATT_PRIMARY_SERVICE(BT_UUID_ESS),
-
-    /* Temperature – UUID 0x2A6E – int16, résolution 0.01 °C */
     BT_GATT_CHARACTERISTIC(BT_UUID_TEMPERATURE,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
-                           read_temp, NULL, NULL),
+                           read_temperature, NULL, NULL),
     BT_GATT_CCC(ccc_temp_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-
-    /* Humidity – UUID 0x2A6F – uint16, résolution 0.01 % */
     BT_GATT_CHARACTERISTIC(BT_UUID_HUMIDITY,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
-                           read_hum, NULL, NULL),
+                           read_humidity, NULL, NULL),
     BT_GATT_CCC(ccc_hum_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-
-    /* Pressure – UUID 0x2A6D – uint32, résolution 0.1 Pa */
     BT_GATT_CHARACTERISTIC(BT_UUID_PRESSURE,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
-                           read_press, NULL, NULL),
+                           read_pressure, NULL, NULL),
     BT_GATT_CCC(ccc_press_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 );
 
-/* ================================================================
- *  Service 2 : Motion (UUID custom) avec User Description
- *  → Les descripteurs permettent à nRF Connect d'afficher
- *    le nom de chaque caractéristique.
- * ================================================================ */
 BT_GATT_SERVICE_DEFINE(motion_svc,
     BT_GATT_PRIMARY_SERVICE(&motion_svc_uuid),
-
-    /* Accéléromètre (3 × int16, mg) */
     BT_GATT_CHARACTERISTIC(&accel_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_accel, NULL, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
-                        NULL, NULL, (void *)"Accelerometer XYZ (mg)"),
+                       NULL, NULL, (void *)"Accelerometer XYZ (mg)"),
     BT_GATT_CCC(ccc_accel_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-
-    /* Magnétomètre (3 × int16, mGauss) */
     BT_GATT_CHARACTERISTIC(&magn_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_magn, NULL, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
-                        NULL, NULL, (void *)"Magnetometer XYZ (mGauss)"),
+                       NULL, NULL, (void *)"Magnetometer XYZ (mGauss)"),
     BT_GATT_CCC(ccc_magn_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-
-    /* Compteur de pas (uint32) */
     BT_GATT_CHARACTERISTIC(&steps_uuid.uuid,
                            BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ,
                            read_steps, NULL, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
-                        NULL, NULL, (void *)"Step Counter"),
+                       NULL, NULL, (void *)"Step Counter"),
     BT_GATT_CCC(ccc_steps_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&rtc_uuid.uuid,
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ,
+                           read_rtc, NULL, NULL),
+    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
+                       NULL, NULL, (void *)"RTC Date Time"),
+    BT_GATT_CCC(ccc_rtc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&heading_uuid.uuid,
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ,
+                           read_heading, NULL, NULL),
+    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
+                       NULL, NULL, (void *)"Compass Heading (0.1 deg)"),
+    BT_GATT_CCC(ccc_heading_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&direction_uuid.uuid,
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ,
+                           read_direction, NULL, NULL),
+    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
+                       NULL, NULL, (void *)"Compass Direction"),
+    BT_GATT_CCC(ccc_direction_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 );
 
-/* ================================================================
- *  Advertising – annonce ESS standard pour que les scanners
- *  sachent qu'on propose des données environnementales.
- * ================================================================ */
 static const struct bt_data ad[] = {
-    BT_DATA_BYTES(BT_DATA_FLAGS,
-                  BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR),
-    BT_DATA_BYTES(BT_DATA_UUID16_ALL,
-                  BT_UUID_16_ENCODE(BT_UUID_ESS_VAL)),
+    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR),
+    BT_DATA_BYTES(BT_DATA_UUID16_ALL, BT_UUID_16_ENCODE(BT_UUID_ESS_VAL)),
 };
 
 static const struct bt_data sd[] = {
-    BT_DATA(BT_DATA_NAME_COMPLETE, "Smart Watch Sensor Hub",
-            sizeof("Smart Watch Sensor Hub") - 1),
+    BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME,
+            sizeof(CONFIG_BT_DEVICE_NAME) - 1),
 };
 
-/* ================================================================
- *  Connexion callbacks
- * ================================================================ */
 static void connected(struct bt_conn *conn, uint8_t err)
 {
+    struct bt_conn *new_conn;
+    struct bt_conn *old_conn;
+
     if (err) {
         LOG_ERR("Connection failed (err %u)", err);
         return;
     }
-    LOG_INF("BLE Connected");
-    current_conn = bt_conn_ref(conn);
+
+    new_conn = bt_conn_ref(conn);
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    old_conn = current_conn;
+    current_conn = new_conn;
+    k_mutex_unlock(&ble_state_mutex);
+
+    if (old_conn != NULL) {
+        bt_conn_unref(old_conn);
+    }
+
+    LOG_INF("BLE connected");
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
-    LOG_INF("BLE Disconnected (reason %u)", reason);
-    if (current_conn) {
-        bt_conn_unref(current_conn);
+    struct bt_conn *old_conn = NULL;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    if (current_conn == conn) {
+        old_conn = current_conn;
         current_conn = NULL;
     }
+    notify_mask = 0U;
+    k_mutex_unlock(&ble_state_mutex);
+
+    if (old_conn != NULL) {
+        bt_conn_unref(old_conn);
+    }
+
+    LOG_INF("BLE disconnected (reason %u)", reason);
 }
 
 BT_CONN_CB_DEFINE(conn_callbacks) = {
-    .connected    = connected,
+    .connected = connected,
     .disconnected = disconnected,
 };
 
-/* ================================================================
- *  API publique
- * ================================================================ */
+static void notify_attr(struct bt_conn *conn,
+                        const struct bt_gatt_attr *attr,
+                        const void *data, size_t len)
+{
+    int err = bt_gatt_notify(conn, attr, data, len);
+    if (err && err != -ENOTCONN) {
+        LOG_WRN("Notify failed (err %d)", err);
+    }
+}
+
 int ble_service_init(void)
 {
     int err;
+    bool already_started;
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    already_started = ble_started;
+    k_mutex_unlock(&ble_state_mutex);
+
+    if (already_started) {
+        return 0;
+    }
 
     err = bt_enable(NULL);
     if (err) {
@@ -272,74 +415,104 @@ int ble_service_init(void)
     }
     LOG_INF("Bluetooth initialized");
 
-    err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad),
+    err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad),
                           sd, ARRAY_SIZE(sd));
     if (err) {
         LOG_ERR("Advertising failed to start (err %d)", err);
         return err;
     }
-    LOG_INF("BLE Advertising started as \"Smart Watch Sensor Hub\"");
 
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memset(&current_data, 0, sizeof(current_data));
+    notify_mask = 0U;
+    ble_started = true;
+    k_mutex_unlock(&ble_state_mutex);
+
+    LOG_INF("BLE advertising started as \"%s\"", CONFIG_BT_DEVICE_NAME);
     return 0;
 }
 
 bool ble_service_is_connected(void)
 {
-    return (current_conn != NULL);
-}
+    bool is_connected;
 
-/* ── Helper : envoyer une notification ─────────────────────────── */
-static void notify_attr(const struct bt_gatt_attr *attr,
-                        const void *data, uint16_t len, bool enabled)
-{
-    if (!enabled || !current_conn) {
-        return;
-    }
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    is_connected = (current_conn != NULL);
+    k_mutex_unlock(&ble_state_mutex);
 
-    int err = bt_gatt_notify(current_conn, attr, data, len);
-    if (err && err != -ENOTCONN) {
-        LOG_WRN("Notify failed (err %d)", err);
-    }
+    return is_connected;
 }
 
 void ble_service_update(const struct ble_sensor_data *data)
 {
-    memcpy(&current_data, data, sizeof(current_data));
+    struct ble_sensor_data snapshot;
+    struct bt_conn *conn = NULL;
+    uint32_t active_notify_mask;
+    size_t rtc_len;
+    size_t dir_len;
 
-    /*
-     * ess_svc.attrs[] indices :
-     *   0  = Service ESS
-     *   1  = Char decl temp,  2 = value temp,  3 = CCC temp
-     *   4  = Char decl hum,   5 = value hum,   6 = CCC hum
-     *   7  = Char decl press, 8 = value press,  9 = CCC press
-     *
-     * motion_svc.attrs[] indices :
-     *   0  = Service Motion
-     *   1  = Char decl accel, 2 = value accel, 3 = CUD, 4 = CCC accel
-     *   5  = Char decl magn,  6 = value magn,  7 = CUD, 8 = CCC magn
-     *   9  = Char decl steps,10 = value steps, 11= CUD, 12= CCC steps
-     */
-    notify_attr(&ess_svc.attrs[2],
-                &current_data.temperature, sizeof(current_data.temperature),
-                notify_temp_enabled);
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    current_data = *data;
+    snapshot = current_data;
+    active_notify_mask = notify_mask;
+    if (current_conn != NULL) {
+        conn = bt_conn_ref(current_conn);
+    }
+    k_mutex_unlock(&ble_state_mutex);
 
-    notify_attr(&ess_svc.attrs[5],
-                &current_data.humidity, sizeof(current_data.humidity),
-                notify_hum_enabled);
+    if (conn == NULL || active_notify_mask == 0U) {
+        if (conn != NULL) {
+            bt_conn_unref(conn);
+        }
+        return;
+    }
 
-    notify_attr(&ess_svc.attrs[8],
-                &current_data.pressure, sizeof(current_data.pressure),
-                notify_press_enabled);
+    if ((active_notify_mask & BLE_NOTIFY_TEMP) != 0U) {
+        notify_attr(conn, &ess_svc.attrs[ESS_TEMP_VAL_ATTR_IDX],
+                    &snapshot.temperature, sizeof(snapshot.temperature));
+    }
 
-    notify_attr(&motion_svc.attrs[2],
-                &current_data.accel, sizeof(current_data.accel),
-                notify_accel_enabled);
+    if ((active_notify_mask & BLE_NOTIFY_HUM) != 0U) {
+        notify_attr(conn, &ess_svc.attrs[ESS_HUM_VAL_ATTR_IDX],
+                    &snapshot.humidity, sizeof(snapshot.humidity));
+    }
 
-    notify_attr(&motion_svc.attrs[6],
-                &current_data.magn, sizeof(current_data.magn),
-                notify_magn_enabled);
+    if ((active_notify_mask & BLE_NOTIFY_PRESS) != 0U) {
+        notify_attr(conn, &ess_svc.attrs[ESS_PRESS_VAL_ATTR_IDX],
+                    &snapshot.pressure, sizeof(snapshot.pressure));
+    }
 
-    notify_attr(&motion_svc.attrs[10],
-                &current_data.steps, sizeof(current_data.steps),
-                notify_steps_enabled);
+    if ((active_notify_mask & BLE_NOTIFY_ACCEL) != 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_ACCEL_VAL_ATTR_IDX],
+                    snapshot.accel, sizeof(snapshot.accel));
+    }
+
+    if ((active_notify_mask & BLE_NOTIFY_MAGN) != 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_MAGN_VAL_ATTR_IDX],
+                    snapshot.magn, sizeof(snapshot.magn));
+    }
+
+    if ((active_notify_mask & BLE_NOTIFY_STEPS) != 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_STEPS_VAL_ATTR_IDX],
+                    &snapshot.steps, sizeof(snapshot.steps));
+    }
+
+    rtc_len = strnlen(snapshot.rtc_text, sizeof(snapshot.rtc_text));
+    if ((active_notify_mask & BLE_NOTIFY_RTC) != 0U && rtc_len > 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_RTC_VAL_ATTR_IDX],
+                    snapshot.rtc_text, rtc_len);
+    }
+
+    if ((active_notify_mask & BLE_NOTIFY_HEADING) != 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_HEADING_VAL_ATTR_IDX],
+                    &snapshot.heading_tenths_deg, sizeof(snapshot.heading_tenths_deg));
+    }
+
+    dir_len = strnlen(snapshot.compass_direction, sizeof(snapshot.compass_direction));
+    if ((active_notify_mask & BLE_NOTIFY_DIR) != 0U && dir_len > 0U) {
+        notify_attr(conn, &motion_svc.attrs[MOTION_DIR_VAL_ATTR_IDX],
+                    snapshot.compass_direction, dir_len);
+    }
+
+    bt_conn_unref(conn);
 }

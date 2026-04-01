@@ -1,11 +1,13 @@
 #ifndef BLE_SERVICE_H
 #define BLE_SERVICE_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/drivers/sensor.h>
-#include <stdbool.h>
 
 /**
  * @file ble_service.h
@@ -22,7 +24,13 @@
  *       Accéléromètre (0x0004) – 3 × int16, mg
  *       Magnétomètre  (0x0005) – 3 × int16, mGauss
  *       Compteur pas  (0x0006) – uint32
+ *       Horodatage RTC (0x0007) – chaîne UTF-8 YYYY-MM-DD HH:MM:SS
+ *       Cap compas     (0x0008) – uint16, 0.1 degré
+ *       Direction      (0x0009) – chaîne UTF-8 (N, NE, E, ...)
  */
+
+#define BLE_RTC_TEXT_LEN 20
+#define BLE_COMPASS_DIR_LEN 4
 
 /* ── Données capteur empaquetées pour BLE ──────────────── */
 struct ble_sensor_data {
@@ -37,6 +45,13 @@ struct ble_sensor_data {
 
     /* Pédomètre */
     uint32_t steps;
+
+    /* RTC */
+    char rtc_text[BLE_RTC_TEXT_LEN];
+
+    /* Compas */
+    uint16_t heading_tenths_deg;
+    char compass_direction[BLE_COMPASS_DIR_LEN];
 };
 
 /**
