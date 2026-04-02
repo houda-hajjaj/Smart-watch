@@ -6,7 +6,7 @@
 
 LOG_MODULE_REGISTER(power_thread, LOG_LEVEL_INF);
 
-#define POWER_TIMEOUT_MS 10000 // 10s
+#define POWER_TIMEOUT_MS 15000 // 15s
 K_SEM_DEFINE(power_awake_sem, 0, 1);
 
 static bool power_thread_started;

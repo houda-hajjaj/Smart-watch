@@ -1,5 +1,6 @@
 #include "ble_service.h"
 
+#include <errno.h>
 #include <string.h>
 
 #include <zephyr/bluetooth/bluetooth.h>
@@ -10,6 +11,10 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/util.h>
+#include <zephyr/sys/byteorder.h>
+
+#include "rtc/rtc.h"
+#include "thread/data_init_thread.h"
 
 LOG_MODULE_REGISTER(ble_service, LOG_LEVEL_INF);
 
@@ -70,6 +75,152 @@ static uint32_t notify_mask;
 static bool ble_started;
 
 K_MUTEX_DEFINE(ble_state_mutex);
+
+static void notify_attr(struct bt_conn *conn,
+                        const struct bt_gatt_attr *attr,
+                        const void *data, size_t len);
+
+static int ble_parse_decimal(const char *text, size_t count)
+{
+    int value = 0;
+    size_t i;
+
+    for (i = 0; i < count; ++i) {
+        if ((text[i] < '0') || (text[i] > '9')) {
+            return -EINVAL;
+        }
+        value = (value * 10) + (text[i] - '0');
+    }
+
+    return value;
+}
+
+static bool ble_is_leap_year(int year)
+{
+    return ((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0));
+}
+
+static int ble_days_in_month(int year, int month)
+{
+    static const uint8_t days_per_month[] = {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+    };
+
+    if ((month < 1) || (month > 12)) {
+        return -EINVAL;
+    }
+
+    if ((month == 2) && ble_is_leap_year(year)) {
+        return 29;
+    }
+
+    return days_per_month[month - 1];
+}
+
+static int ble_parse_rtc_text(const char *text,
+                              int *year,
+                              int *month,
+                              int *day,
+                              int *hour,
+                              int *minute,
+                              int *second)
+{
+    int max_day;
+
+    if ((text == NULL) || (year == NULL) || (month == NULL) || (day == NULL) ||
+        (hour == NULL) || (minute == NULL) || (second == NULL)) {
+        return -EINVAL;
+    }
+
+    if ((text[4] != '-') || (text[7] != '-') || (text[10] != ' ') ||
+        (text[13] != ':') || (text[16] != ':') || (text[19] != '\0')) {
+        return -EINVAL;
+    }
+
+    *year = ble_parse_decimal(&text[0], 4);
+    *month = ble_parse_decimal(&text[5], 2);
+    *day = ble_parse_decimal(&text[8], 2);
+    *hour = ble_parse_decimal(&text[11], 2);
+    *minute = ble_parse_decimal(&text[14], 2);
+    *second = ble_parse_decimal(&text[17], 2);
+
+    max_day = ble_days_in_month(*year, *month);
+    if ((*year < 2000) || (max_day < 0) || (*day < 1) || (*day > max_day) ||
+        (*hour < 0) || (*hour > 23) || (*minute < 0) || (*minute > 59) ||
+        (*second < 0) || (*second > 59)) {
+        return -EINVAL;
+    }
+
+    return 0;
+}
+
+static ssize_t write_rtc(struct bt_conn *conn,
+                         const struct bt_gatt_attr *attr,
+                         const void *buf, uint16_t len, uint16_t offset, uint8_t flags)
+{
+    char rtc_text[BLE_RTC_TEXT_LEN];
+    uint16_t copy_len;
+    DataInitContext *ctx;
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int second;
+    int err;
+
+    ARG_UNUSED(flags);
+
+    if (offset != 0U) {
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+    }
+
+    if ((buf == NULL) || (len < (BLE_RTC_TEXT_LEN - 1U)) || (len > BLE_RTC_TEXT_LEN)) {
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+    }
+
+    copy_len = len;
+    if ((copy_len == BLE_RTC_TEXT_LEN) && (((const char *)buf)[BLE_RTC_TEXT_LEN - 1] == '\0')) {
+        copy_len -= 1U;
+    }
+
+    if (copy_len != (BLE_RTC_TEXT_LEN - 1U)) {
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+    }
+
+    memcpy(rtc_text, buf, copy_len);
+    rtc_text[copy_len] = '\0';
+
+    err = ble_parse_rtc_text(rtc_text, &year, &month, &day, &hour, &minute, &second);
+    if (err != 0) {
+        LOG_WRN("BLE RTC write rejected: invalid format");
+        return BT_GATT_ERR(BT_ATT_ERR_VALUE_NOT_ALLOWED);
+    }
+
+    ctx = data_init_thread_get_context_mutable();
+    if ((ctx == NULL) || !ctx->rtc_ready) {
+        LOG_WRN("BLE RTC write rejected: RTC not ready");
+        return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
+    }
+
+    err = watch_rtc_set(&ctx->rtc, year, month, day, hour, minute, second);
+    if (err != 0) {
+        LOG_ERR("BLE RTC write failed (err %d)", err);
+        return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
+    }
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    memcpy(current_data.rtc_text, rtc_text, sizeof(current_data.rtc_text));
+    k_mutex_unlock(&ble_state_mutex);
+
+    LOG_INF("RTC updated over BLE: %s", rtc_text);
+
+    if ((conn != NULL) && ((notify_mask & BLE_NOTIFY_RTC) != 0U)) {
+        notify_attr(conn, attr, rtc_text, copy_len);
+    }
+
+    return len;
+}
 
 static ssize_t read_temperature(struct bt_conn *conn,
                                 const struct bt_gatt_attr *attr,
@@ -306,9 +457,9 @@ BT_GATT_SERVICE_DEFINE(motion_svc,
                        NULL, NULL, (void *)"Step Counter"),
     BT_GATT_CCC(ccc_steps_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
     BT_GATT_CHARACTERISTIC(&rtc_uuid.uuid,
-                           BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                           BT_GATT_PERM_READ,
-                           read_rtc, NULL, NULL),
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
+                           read_rtc, write_rtc, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, BT_GATT_PERM_READ,
                        NULL, NULL, (void *)"RTC Date Time"),
     BT_GATT_CCC(ccc_rtc_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
@@ -441,6 +592,74 @@ bool ble_service_is_connected(void)
     k_mutex_unlock(&ble_state_mutex);
 
     return is_connected;
+}
+
+bool ble_service_get_rssi_dbm(int8_t *out_rssi_dbm)
+{
+    struct bt_conn *conn = NULL;
+    struct net_buf *cmd_buf;
+    struct net_buf *rsp = NULL;
+    struct bt_hci_cp_read_rssi *cp;
+    struct bt_hci_rp_read_rssi *rp;
+    uint16_t conn_handle;
+    int err;
+    bool ok = false;
+
+    if (out_rssi_dbm == NULL) {
+        return false;
+    }
+
+    k_mutex_lock(&ble_state_mutex, K_FOREVER);
+    if (current_conn != NULL) {
+        conn = bt_conn_ref(current_conn);
+    }
+    k_mutex_unlock(&ble_state_mutex);
+
+    if (conn == NULL) {
+        return false;
+    }
+
+    err = bt_hci_get_conn_handle(conn, &conn_handle);
+    if (err != 0) {
+        LOG_DBG("Failed to get BLE connection handle (err %d)", err);
+        goto out;
+    }
+
+    cmd_buf = bt_hci_cmd_alloc(K_FOREVER);
+    if (cmd_buf == NULL) {
+        LOG_DBG("Failed to allocate HCI RSSI command buffer");
+        goto out;
+    }
+
+    cp = net_buf_add(cmd_buf, sizeof(*cp));
+    cp->handle = sys_cpu_to_le16(conn_handle);
+
+    err = bt_hci_cmd_send_sync(BT_HCI_OP_READ_RSSI, cmd_buf, &rsp);
+    if (err != 0) {
+        LOG_DBG("Failed to read BLE RSSI (err %d)", err);
+        goto out;
+    }
+
+    if ((rsp == NULL) || (rsp->len < sizeof(*rp))) {
+        LOG_DBG("BLE RSSI response too short");
+        goto out;
+    }
+
+    rp = (struct bt_hci_rp_read_rssi *)rsp->data;
+    if (rp->status != 0U || sys_le16_to_cpu(rp->handle) != conn_handle ||
+        rp->rssi == BT_HCI_LE_RSSI_NOT_AVAILABLE) {
+        goto out;
+    }
+
+    *out_rssi_dbm = rp->rssi;
+    ok = true;
+
+out:
+    if (rsp != NULL) {
+        net_buf_unref(rsp);
+    }
+    bt_conn_unref(conn);
+    return ok;
 }
 
 void ble_service_update(const struct ble_sensor_data *data)

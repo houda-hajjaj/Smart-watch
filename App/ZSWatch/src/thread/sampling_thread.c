@@ -198,11 +198,20 @@ static void sampling_entry(void *arg1, void *arg2, void *arg3)
         if (steps > prev_steps) {
             uint32_t steps_added = steps - prev_steps;
             double distance_before = distance_get(&distance_counter);
+            activity_t calorie_activity = activity;
 
             distance_add_steps(&distance_counter, steps_added);
+
+            /* Counted steps mean the user is moving, even if the
+             * instantaneous activity classifier still reports rest.
+             */
+            if (calorie_activity != ACTIVITY_RUNNING) {
+                calorie_activity = ACTIVITY_WALKING;
+            }
+
             calories_add_distance(&calories_counter,
                                   distance_get(&distance_counter) - distance_before,
-                                  activity);
+                                  calorie_activity);
             prev_steps = steps;
         }
 

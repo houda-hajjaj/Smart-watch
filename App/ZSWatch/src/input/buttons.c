@@ -29,6 +29,7 @@ static void buttons_sw0_pressed(const struct device *port,
                                 gpio_port_pins_t pins)
 {
     int64_t now_ms;
+    bool eco_mode;
 
     ARG_UNUSED(port);
     ARG_UNUSED(cb);
@@ -40,7 +41,9 @@ static void buttons_sw0_pressed(const struct device *port,
     }
 
     last_sw0_press_ms = now_ms;
-    if (power_thread_is_eco_mode()) {
+    eco_mode = power_thread_is_eco_mode();
+    power_thread_notify_activity();
+    if (eco_mode) {
         return;
     }
 

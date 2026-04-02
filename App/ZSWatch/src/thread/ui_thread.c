@@ -7,6 +7,7 @@
 #include <zephyr/logging/log.h>
 
 #include <lvgl.h>
+#include <limits.h>
 
 #include "ble/ble_service.h"
 #include "input/buttons.h"
@@ -89,7 +90,15 @@ static void ui_thread_refresh_model(view_model_data_t *model)
     model->ble_connected = ble_service_is_connected();
     model->battery_percent = 100U;
     model->battery_charging = false;
-    model->ble_rssi_dbm = 0;
+    model->ble_rssi_dbm = INT8_MAX;
+
+    if (model->ble_connected) {
+        int8_t rssi_dbm;
+
+        if (ble_service_get_rssi_dbm(&rssi_dbm)) {
+            model->ble_rssi_dbm = rssi_dbm;
+        }
+    }
 }
 
 static void ui_thread_entry(void *arg1, void *arg2, void *arg3)
@@ -142,17 +151,9 @@ static void ui_thread_entry(void *arg1, void *arg2, void *arg3)
                 lv_screen_load(sleep_screen);
                 ui_process();
             }
-            err = display_blanking_on(display_dev);
-            if (err != 0) {
-                LOG_WRN("display_blanking_on failed (err %d)", err);
-            }
             display_sleeping = true;
         } else if (!eco_mode && display_sleeping) {
             LOG_INF("UI leaving sleep state");
-            err = display_blanking_off(display_dev);
-            if (err != 0) {
-                LOG_WRN("display_blanking_off failed while waking (err %d)", err);
-            }
             ME_VUE_show_screen(ME_VUE_get_current_screen(), VIEW_TRANSITION_NONE, 0);
             ui_process();
             display_sleeping = false;

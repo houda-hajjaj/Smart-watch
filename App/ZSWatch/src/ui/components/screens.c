@@ -13,6 +13,8 @@
 #include "styles.h"
 #include "view_events.h"
 #include "screens_internal.h"
+#include "thread/power_thread.h"
+#include <limits.h>
 #include <string.h>
 #include <zephyr/logging/log.h>
 #include <lvgl.h>
@@ -216,6 +218,20 @@ static const char *event_name(view_event_id_t id)
 
 static bool event_point_get(lv_event_t *e, lv_point_t *point);
 
+static void screens_note_touch_activity(lv_event_code_t code)
+{
+    switch (code) {
+    case LV_EVENT_PRESSED:
+    case LV_EVENT_PRESSING:
+    case LV_EVENT_RELEASED:
+    case LV_EVENT_CLICKED:
+        power_thread_notify_activity();
+        break;
+    default:
+        break;
+    }
+}
+
 static void build_touch_event_data(lv_event_t *e, view_event_data_t *event_data)
 {
     lv_obj_t *target;
@@ -281,6 +297,7 @@ static void screens_touch_trace_cb(lv_event_t *e)
     view_event_id_t gesture = VIEW_EVENT_NONE;
 
     build_touch_event_data(e, &event_data);
+    screens_note_touch_activity(code);
 
     if (code == LV_EVENT_PRESSED) {
         s_touch_gesture.active = true;
@@ -348,6 +365,7 @@ void screens_nav_event_cb(lv_event_t *e)
     view_event_data_t event_data;
 
     build_touch_event_data(e, &event_data);
+    screens_note_touch_activity(code);
 
     if (code == LV_EVENT_PRESSED) {
         LOG_INF("Touch target screen=%u x=%d y=%d -> %s",
@@ -645,7 +663,8 @@ void view_screens_update(const view_model_data_t *model)
         lv_label_set_text(s_act_dist, buf);
     }
     if (s_act_cal) {
-        lv_snprintf(buf, sizeof(buf), "%d kcal", (int)(model->calories_kcal + 0.5f));
+        int deci_kcal = (int)(model->calories_kcal * 10.0f + 0.5f);
+        lv_snprintf(buf, sizeof(buf), "%d.%d kcal", deci_kcal / 10, deci_kcal % 10);
         lv_label_set_text(s_act_cal, buf);
     }
     if (s_act_type) {
@@ -666,7 +685,7 @@ void view_screens_update(const view_model_data_t *model)
                           model->ble_connected ? "Connecte" : "Deconnecte");
     }
     if (s_ble_rssi) {
-        if (model->ble_rssi_dbm != 0)
+        if (model->ble_connected && model->ble_rssi_dbm != INT8_MAX)
             lv_snprintf(buf, sizeof(buf), "RSSI: %d dBm", (int)model->ble_rssi_dbm);
         else
             lv_snprintf(buf, sizeof(buf), "RSSI: -- dBm");

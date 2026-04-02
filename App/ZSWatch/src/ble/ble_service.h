@@ -73,4 +73,11 @@ void ble_service_update(const struct ble_sensor_data *data);
  */
 bool ble_service_is_connected(void);
 
+/**
+ * @brief Read the current RSSI for the active BLE connection.
+ * @param out_rssi_dbm Destination for the RSSI in dBm.
+ * @return true if an RSSI value was read, false otherwise.
+ */
+bool ble_service_get_rssi_dbm(int8_t *out_rssi_dbm);
+
 #endif /* BLE_SERVICE_H */
