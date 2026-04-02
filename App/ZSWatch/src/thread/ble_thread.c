@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
@@ -16,11 +18,74 @@ LOG_MODULE_REGISTER(ble_thread, LOG_LEVEL_INF);
 
 #define BLE_THREAD_STACK_SIZE 1536
 #define BLE_THREAD_PRIORITY 6
+#define BLE_LED_BLINK_MS 100
 
 K_THREAD_STACK_DEFINE(ble_thread_stack, BLE_THREAD_STACK_SIZE);
 static struct k_thread ble_thread_data;
 static bool ble_thread_started;
 K_SEM_DEFINE(ble_update_sem, 0, 1);
+
+static const struct gpio_dt_spec ble_led = GPIO_DT_SPEC_GET_OR(DT_ALIAS(led0), gpios, {0});
+static bool ble_led_ready;
+static bool ble_led_on;
+static int64_t ble_led_last_toggle_ms;
+
+static void ble_thread_led_set(bool on)
+{
+    if (!ble_led_ready) {
+        return;
+    }
+
+    if (gpio_pin_set_dt(&ble_led, on ? 1 : 0) == 0) {
+        ble_led_on = on;
+    }
+}
+
+static void ble_thread_led_update(bool ble_connected, int64_t now_ms)
+{
+    if (!ble_led_ready) {
+        return;
+    }
+
+    if (!ble_connected) {
+        if (ble_led_on) {
+            ble_thread_led_set(false);
+        }
+        ble_led_last_toggle_ms = now_ms;
+        return;
+    }
+
+    if ((now_ms - ble_led_last_toggle_ms) >= BLE_LED_BLINK_MS) {
+        ble_thread_led_set(!ble_led_on);
+        ble_led_last_toggle_ms = now_ms;
+    }
+}
+
+static void ble_thread_led_init(void)
+{
+    int err;
+
+    if (ble_led.port == NULL) {
+        LOG_WRN("BLE LED alias not available");
+        return;
+    }
+
+    if (!device_is_ready(ble_led.port)) {
+        LOG_WRN("BLE LED GPIO device not ready");
+        return;
+    }
+
+    err = gpio_pin_configure_dt(&ble_led, GPIO_OUTPUT_INACTIVE);
+    if (err != 0) {
+        LOG_ERR("BLE LED configure failed (err %d)", err);
+        return;
+    }
+
+    ble_led_ready = true;
+    ble_led_on = false;
+    ble_led_last_toggle_ms = k_uptime_get();
+    LOG_INF("BLE LED configured on pin %d", ble_led.pin);
+}
 
 static void format_two_digits(char *dst, uint8_t value)
 {
@@ -79,6 +144,8 @@ static void ble_thread_entry(void *arg1, void *arg2, void *arg3)
     uint8_t rtc_hour;
     uint8_t rtc_min;
     uint8_t rtc_sec;
+    bool ble_connected;
+    int64_t now_ms;
 
     if (!data_init_thread_wait_ready(K_FOREVER)) {
         LOG_ERR("BLE thread aborted: data init not ready");
@@ -86,6 +153,7 @@ static void ble_thread_entry(void *arg1, void *arg2, void *arg3)
     }
 
     ctx = data_init_thread_get_context();
+    ble_thread_led_init();
 
     LOG_INF("BLE thread started");
 
@@ -94,7 +162,11 @@ static void ble_thread_entry(void *arg1, void *arg2, void *arg3)
             continue;
         }
 
-        if (sampling_thread_get_latest_copy(&sample) && ble_service_is_connected()) {
+        now_ms = k_uptime_get();
+        ble_connected = ble_service_is_connected();
+        ble_thread_led_update(ble_connected, now_ms);
+
+        if (sampling_thread_get_latest_copy(&sample) && ble_connected) {
             payload = sample.ble_data;
 
             if (ctx && ctx->rtc_ready && watch_rtc_get((WatchRTC *)&ctx->rtc, &now) == 0) {

@@ -19,7 +19,7 @@
 
 LOG_MODULE_REGISTER(ui_thread, LOG_LEVEL_INF);
 
-#define UI_THREAD_STACK_SIZE 4096
+#define UI_THREAD_STACK_SIZE 8192
 #define UI_THREAD_PRIORITY 2
 #define UI_THREAD_PERIOD_MS 10
 #define UI_MODEL_REFRESH_MS 200
@@ -28,6 +28,7 @@ K_THREAD_STACK_DEFINE(ui_thread_stack, UI_THREAD_STACK_SIZE);
 static struct k_thread ui_thread_data;
 static bool ui_thread_started;
 static lv_obj_t *sleep_screen;
+static view_model_data_t ui_model;
 
 static void ui_thread_sleep_screen_create(void)
 {
@@ -108,7 +109,6 @@ static void ui_thread_entry(void *arg1, void *arg2, void *arg3)
     ARG_UNUSED(arg3);
 
     const struct device *display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
-    view_model_data_t model = {0};
     int64_t last_model_refresh_ms = 0;
     bool display_sleeping = false;
     int err;
@@ -162,8 +162,8 @@ static void ui_thread_entry(void *arg1, void *arg2, void *arg3)
         ui_thread_handle_button_events();
 
         if (!display_sleeping && ((now_ms - last_model_refresh_ms) >= UI_MODEL_REFRESH_MS)) {
-            ui_thread_refresh_model(&model);
-            ui_update(&model);
+            ui_thread_refresh_model(&ui_model);
+            ui_update(&ui_model);
             last_model_refresh_ms = now_ms;
         }
 
