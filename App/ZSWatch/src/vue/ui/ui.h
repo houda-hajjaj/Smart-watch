@@ -6,8 +6,6 @@ extern "C" {
 #endif
 
 #include "components/me_vue.h"
-#include "ui_events.h"
-#include "ui_helpers.h"
 
 int ui_init_with_config(const view_config_t *config);
 void ui_init(void);

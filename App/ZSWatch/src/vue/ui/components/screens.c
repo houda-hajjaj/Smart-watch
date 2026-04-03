@@ -39,6 +39,7 @@ lv_obj_t *s_sb_batt[SB_COUNT];
 
 lv_obj_t *s_home_hour;
 lv_obj_t *s_home_min;
+lv_obj_t *s_home_sec;
 lv_obj_t *s_home_date;
 lv_obj_t *s_home_steps;
 
@@ -77,6 +78,7 @@ static void clear_widget_refs(void)
 
     s_home_hour = NULL;
     s_home_min = NULL;
+    s_home_sec = NULL;
     s_home_date = NULL;
     s_home_steps = NULL;
 
@@ -427,7 +429,7 @@ void screens_create_status_bar(lv_obj_t *parent, int idx)
     screens_make_clickable(s_sb_ble[idx], VIEW_EVENT_NAV_BLE);
 
     s_sb_time[idx] = lv_label_create(bar);
-    lv_label_set_text(s_sb_time[idx], "12:00");
+    lv_label_set_text(s_sb_time[idx], "12:00:00");
     screens_set_label_style(s_sb_time[idx], view_font_title(), 0xF0F6FC);
     lv_obj_align(s_sb_time[idx], LV_ALIGN_CENTER, 0, 0);
     screens_make_clickable(s_sb_time[idx], VIEW_EVENT_NAV_HOME);
@@ -568,8 +570,9 @@ void view_screens_update(const view_model_data_t *model)
 
     for (i = 0; i < SB_COUNT; i++) {
         if (s_sb_time[i]) {
-            lv_snprintf(buf, sizeof(buf), "%02u:%02u",
-                        (unsigned)model->hour, (unsigned)model->minute);
+            lv_snprintf(buf, sizeof(buf), "%02u:%02u:%02u",
+                        (unsigned)model->hour, (unsigned)model->minute,
+                        (unsigned)model->second);
             lv_label_set_text(s_sb_time[i], buf);
         }
         if (s_sb_batt[i]) {
@@ -592,6 +595,10 @@ void view_screens_update(const view_model_data_t *model)
     if (s_home_min) {
         lv_snprintf(buf, sizeof(buf), "%02u", (unsigned)model->minute);
         lv_label_set_text(s_home_min, buf);
+    }
+    if (s_home_sec) {
+        lv_snprintf(buf, sizeof(buf), "%02u", (unsigned)model->second);
+        lv_label_set_text(s_home_sec, buf);
     }
     if (s_home_date) {
         lv_snprintf(buf, sizeof(buf), "%02u/%02u/%02u",

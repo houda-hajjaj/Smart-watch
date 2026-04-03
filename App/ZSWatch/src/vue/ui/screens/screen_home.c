@@ -3,7 +3,7 @@
 
 void screen_home_create(void)
 {
-    lv_obj_t *dial, *ring, *row, *btn;
+    lv_obj_t *dial, *ring, *row, *btn, *label;
 
     s_home = lv_obj_create(NULL);
     screens_apply_screen_base(s_home);
@@ -30,19 +30,28 @@ void screen_home_create(void)
 
     row = lv_obj_create(dial);
     lv_obj_remove_style_all(row);
-    lv_obj_set_size(row, 120, 44);
+    lv_obj_set_size(row, 140, 44);
     lv_obj_align(row, LV_ALIGN_CENTER, 0, -15);
     lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_pad_column(row, 6, 0);
+    lv_obj_set_style_pad_column(row, 2, 0);
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
 
     s_home_hour = lv_label_create(row);
     lv_label_set_text(s_home_hour, "00");
     screens_set_label_style(s_home_hour, view_font_time(), 0xFFFFFF);
+    label = lv_label_create(row);
+    lv_label_set_text(label, ":");
+    screens_set_label_style(label, view_font_time(), 0xFFFFFF);
     s_home_min = lv_label_create(row);
     lv_label_set_text(s_home_min, "00");
     screens_set_label_style(s_home_min, view_font_time(), 0xFFFFFF);
+    label = lv_label_create(row);
+    lv_label_set_text(label, ":");
+    screens_set_label_style(label, view_font_time(), 0xFFFFFF);
+    s_home_sec = lv_label_create(row);
+    lv_label_set_text(s_home_sec, "00");
+    screens_set_label_style(s_home_sec, view_font_time(), 0xFFFFFF);
 
     s_home_date = lv_label_create(dial);
     lv_label_set_text(s_home_date, "09/07/26");

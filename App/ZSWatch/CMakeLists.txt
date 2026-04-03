@@ -9,12 +9,16 @@ target_sources(app PRIVATE ${app_sources})
 
 target_include_directories(app PRIVATE
     src
-    src/sensors
-    src/processing
-    src/ble
-    src/thread
-    src/ui
-    src/ui/components
-    src/ui/screens
-    src/ui/images
+    src/model
+    src/model/sensors
+    src/model/processing
+    src/model/rtc
+    src/controller
+    src/controller/ble
+    src/controller/input
+    src/controller/thread
+    src/vue
+    src/vue/ui
+    src/vue/ui/components
+    src/vue/ui/screens
 )

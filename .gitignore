@@ -26,6 +26,8 @@ cmake-build-*/
 
 # IDE / Editors
 .vscode/
+.cursor/
+**/.claude/
 .idea/
 *.swp
 *.swo

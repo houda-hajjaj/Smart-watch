@@ -8,7 +8,3 @@ screens/screen_compass.c
 screens/screen_activity.c
 screens/screen_ble.c
 ui.c
-ui_helpers.c
-ui_events.c
-images/ui_img_gear_icon_png.c
-images/ui_img_weather_png.c

@@ -40,6 +40,7 @@ extern lv_obj_t *s_sb_batt[];
 
 extern lv_obj_t *s_home_hour;
 extern lv_obj_t *s_home_min;
+extern lv_obj_t *s_home_sec;
 extern lv_obj_t *s_home_date;
 extern lv_obj_t *s_home_steps;
 
