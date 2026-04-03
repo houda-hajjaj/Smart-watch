@@ -1,9 +1,6 @@
 /**
  * @file me_vue.h
- * @brief Gestionnaire d'écrans LVGL - transitions, mises à jour, dispatch événements
- *
- * Orchestre les écrans, applique les transitions, met à jour les widgets.
- * Envoie les événements utilisateur au controller.
+ * @brief Vue principale : identifiants d'écran, modèle affiché, API init / navigation / événements.
  */
 
 #ifndef ME_VUE_H

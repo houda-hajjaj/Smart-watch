@@ -1,6 +1,12 @@
+/**
+ * @file screen_splash.c
+ * @brief Écran d'accueil au démarrage : titre, sous-titre, bouton pour aller à l'horloge.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
+/* Construit s_splash : textes centrés + bouton « maison / continuer » → NAV_HOME. */
 void screen_splash_create(void)
 {
     lv_obj_t *btn, *label;
@@ -9,12 +15,12 @@ void screen_splash_create(void)
     screens_apply_screen_base(s_splash);
 
     label = lv_label_create(s_splash);
-    lv_label_set_text(label, "ZSWatch");
+    lv_label_set_text(label, "Smart Watch");
     screens_set_label_style(label, view_font_time(), 0x58A6FF);
     lv_obj_align(label, LV_ALIGN_CENTER, 0, -30);
 
     label = lv_label_create(s_splash);
-    lv_label_set_text(label, "Smart Watch");
+    lv_label_set_text(label, "BY TIMER_X");
     screens_set_label_style(label, view_font_title(), 0x8B949E);
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 15);
 

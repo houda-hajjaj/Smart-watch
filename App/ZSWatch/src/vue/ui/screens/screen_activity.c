@@ -1,6 +1,12 @@
+/**
+ * @file screen_activity.c
+ * @brief Suivi d'activité : pas, distance, calories, type, alerte chute.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
+/* Construit s_activity : cartes de stats + libellés bas de page. */
 void screen_activity_create(void)
 {
     lv_obj_t *card, *label, *home_btn;

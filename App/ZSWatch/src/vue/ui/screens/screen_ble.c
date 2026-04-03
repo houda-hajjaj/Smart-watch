@@ -1,6 +1,12 @@
+/**
+ * @file screen_ble.c
+ * @brief Connexion Bluetooth : état, RSSI, bouton retour accueil.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
+/* Construit s_ble : carte statut + bouton maison. */
 void screen_ble_create(void)
 {
     lv_obj_t *card, *label, *home_btn;

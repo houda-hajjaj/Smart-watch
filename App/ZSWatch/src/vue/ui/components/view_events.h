@@ -1,8 +1,6 @@
 /**
  * @file view_events.h
- * @brief IDs et types d'événements View -> Controller
- *
- * Contrat d'échange événementiel entre la tâche Vue et la ME principale.
+ * @brief Liste des événements UI (navigation, boutons, gestes) et structure envoyée au contrôleur.
  */
 
 #ifndef VIEW_EVENTS_H

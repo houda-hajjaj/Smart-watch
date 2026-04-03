@@ -1,6 +1,11 @@
 #ifndef ZSWATCH_PORTABLE_UI_H
 #define ZSWATCH_PORTABLE_UI_H
 
+/**
+ * @file ui.h
+ * @brief Façade IHM : démarre LVGL, fait tourner la Vue et pousse les données affichées.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

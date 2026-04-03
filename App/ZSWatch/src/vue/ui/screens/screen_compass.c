@@ -1,9 +1,15 @@
+/**
+ * @file screen_compass.c
+ * @brief Écran « capteurs » : boussole (arc + aiguille), cap affiché en degrés et point cardinal.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
 #define CMP_RING_SZ   130
 #define CMP_CENTER_Y  117
 
+/* Construit s_compass : rose N/E/S/O, aiguille rotative, bouton home. */
 void screen_compass_create(void)
 {
     lv_obj_t *label, *home_btn;

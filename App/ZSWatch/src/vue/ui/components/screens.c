@@ -1,13 +1,7 @@
 /**
  * @file screens.c
- * @brief Construction et mise à jour des écrans LVGL
- *
- * Style cours MVC IoT :
- * - Ce module gère uniquement l'IHM (widgets, rendu, interactions).
- * - Les interactions sont converties en événements View -> Controller.
- * - Aucun calcul métier n'est réalisé ici.
+ * @brief Cœur de la Vue LVGL : crée les écrans, gère touch/swipes, envoie les événements au contrôleur.
  */
-
 
 #include "screens.h"
 #include "styles.h"
@@ -70,6 +64,7 @@ static struct {
     lv_point_t start;
 } s_touch_gesture;
 
+/* Remet à zéro les pointeurs vers widgets (après destroy ou avant init). */
 static void clear_widget_refs(void)
 {
     memset(s_sb_ble, 0, sizeof(s_sb_ble));
@@ -104,6 +99,7 @@ static void clear_widget_refs(void)
     s_ble_rssi = NULL;
 }
 
+/* Crée l'écran LVGL au premier accès, sinon renvoie celui déjà construit. */
 static lv_obj_t *screen_get_or_create(view_screen_id_t id)
 {
     switch (id) {
@@ -169,8 +165,7 @@ static uint8_t screen_id_from_root(const lv_obj_t *root)
     return VIEW_SCREEN_NONE;
 }
 
-/* ─── Helpers ──────────────────────────────────────────────────────────── */
-
+/* Nom lisible pour les logs (debug). */
 static const char *event_name(view_event_id_t id)
 {
     switch (id) {
@@ -290,6 +285,7 @@ static bool event_point_get(lv_event_t *e, lv_point_t *point)
     return true;
 }
 
+/* Suit le doigt : au relâchement, détecte swipe et envoie un événement geste. */
 static void screens_touch_trace_cb(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -352,6 +348,7 @@ static void screens_touch_trace_cb(lv_event_t *e)
     }
 }
 
+/* Appelle le callback configuré (lien View → contrôleur / appli). */
 void screens_send_event(view_event_id_t id, const view_event_data_t *event_data)
 {
     if (id == VIEW_EVENT_NONE) return;
@@ -360,6 +357,7 @@ void screens_send_event(view_event_id_t id, const view_event_data_t *event_data)
     }
 }
 
+/* Clic sur un widget cliquable : envoie l'événement ID stocké dans user_data. */
 void screens_nav_event_cb(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -395,6 +393,7 @@ void screens_nav_event_cb(lv_event_t *e)
     screens_send_event(event_id, &event_data);
 }
 
+/* Style fond + capture tactile + trace des gestes sur tout l'écran. */
 void screens_apply_screen_base(lv_obj_t *scr)
 {
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
@@ -410,6 +409,7 @@ void screens_set_label_style(lv_obj_t *lbl, const lv_font_t *font, uint32_t colo
     lv_obj_set_style_text_opa(lbl, LV_OPA_COVER, 0);
 }
 
+/* Barre du haut : BLE, heure, batterie, bouton « suivant » ; @p idx indexe les buffers globaux. */
 void screens_create_status_bar(lv_obj_t *parent, int idx)
 {
     lv_obj_t *bar = lv_obj_create(parent);
@@ -517,10 +517,7 @@ lv_obj_t *screens_create_step_icon(lv_obj_t *parent)
     return icon;
 }
 
-/* ─── Init / Deinit ────────────────────────────────────────────────────── */
-
-/* ─── Init / Deinit ────────────────────────────────────────────────────── */
-
+/* Charge les styles, prépare splash + home ; les autres écrans sont lazy. */
 int view_screens_init(const view_config_t *config)
 {
     clear_widget_refs();
@@ -537,6 +534,7 @@ int view_screens_init(const view_config_t *config)
     return (s_splash && s_home) ? 0 : -1;
 }
 
+/* Supprime tous les écrans LVGL et vide les références. */
 void view_screens_deinit(void)
 {
     if (s_splash) lv_obj_del(s_splash);
@@ -559,8 +557,7 @@ lv_obj_t *view_screens_get(view_screen_id_t id)
     return screen_get_or_create(id);
 }
 
-/* ─── Mise à jour model ────────────────────────────────────────────────── */
-
+/* Recopie le modèle dans les labels (status bar, home, météo, boussole, activité, BLE). */
 void view_screens_update(const view_model_data_t *model)
 {
     char buf[32];

@@ -1,6 +1,6 @@
 /**
  * @file styles.h
- * @brief API des styles LVGL pour la couche Vue
+ * @brief Couleurs, polices et accesseurs aux styles LVGL réutilisables sur les écrans.
  */
 
 #ifndef ZSWATCH_VIEW_STYLES_H

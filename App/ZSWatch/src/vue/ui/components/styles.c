@@ -1,9 +1,6 @@
 /**
  * @file styles.c
- * @brief Styles graphiques de la Vue (IHM seulement)
- *
- * Style cours MVC IoT : ce module ne contient aucune logique de contrôle,
- * uniquement la configuration visuelle LVGL (styles, couleurs, polices).
+ * @brief Initialise les lv_style_t (fond, cartes, bouton retour) et expose les polices LVGL.
  */
 
 #include "styles.h"
@@ -14,6 +11,7 @@ static lv_style_t s_style_card;
 static lv_style_t s_style_card_pressed;
 static lv_style_t s_style_back_button;
 
+/* Idempotent : une seule initialisation réelle des lv_style_t. */
 void view_styles_init(void)
 {
     if (s_initialized) {

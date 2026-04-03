@@ -1,6 +1,12 @@
+/**
+ * @file screen_weather.c
+ * @brief Écran « notifications » mappé sur la météo : température, pression, humidité, etc.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
+/* Construit s_weather : cartes cliquables + infos complémentaires en bas. */
 void screen_weather_create(void)
 {
     lv_obj_t *card, *label, *home_btn;

@@ -1,6 +1,11 @@
 #ifndef ZSWATCH_VIEW_SCREENS_H
 #define ZSWATCH_VIEW_SCREENS_H
 
+/**
+ * @file screens.h
+ * @brief API publique des écrans : init globale, récupération d'un écran, refresh données.
+ */
+
 #include <lvgl.h>
 
 #include "me_vue.h"

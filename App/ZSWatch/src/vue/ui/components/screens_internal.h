@@ -1,8 +1,6 @@
 /**
  * @file screens_internal.h
- * @brief Déclarations internes de la Vue (widgets + helpers)
- *
- * Réservé au module View : utilisé par screens.c et screen_*.c.
+ * @brief Interne à la Vue : tailles d'écran, widgets globaux, helpers partagés par les écrans.
  */
 
 #ifndef ZSWATCH_VIEW_SCREENS_INTERNAL_H

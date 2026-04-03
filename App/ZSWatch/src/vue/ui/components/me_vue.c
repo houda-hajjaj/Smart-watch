@@ -1,3 +1,8 @@
+/**
+ * @file me_vue.c
+ * @brief Machine à états de la Vue : splash puis home, file d'écran différé, transitions LVGL.
+ */
+
 #include "me_vue.h"
 #include "screens.h"
 #include <lvgl.h>
@@ -22,6 +27,7 @@ static void default_view_event_cb(uint32_t event_id,
                                   const view_event_data_t *event_data,
                                   void *user_data);
 
+/* Charge l'écran cible avec animation ou sans (instantané). */
 static void apply_transition(lv_obj_t *target, view_transition_t transition)
 {
     if (!target) return;
@@ -54,6 +60,7 @@ static void apply_transition(lv_obj_t *target, view_transition_t transition)
     }
 }
 
+/* Si un changement d'écran était planifié avec délai, l'exécute quand l'heure est venue. */
 static void process_pending_transition(uint32_t now_ms)
 {
     lv_obj_t *target;
@@ -72,6 +79,7 @@ static void process_pending_transition(uint32_t now_ms)
     s_view.pending_screen = VIEW_SCREEN_NONE;
 }
 
+/* Construit les écrans, affiche le splash ; passage home automatique après VIEW_SPLASH_DURATION_MS. */
 int ME_VUE_init(const view_config_t *config)
 {
     lv_obj_t *initial_screen;
@@ -104,6 +112,7 @@ int ME_VUE_init(const view_config_t *config)
     return 0;
 }
 
+/* Détruit les objets LVGL des écrans. */
 void ME_VUE_deinit(void)
 {
     if (!s_view.initialized) return;
@@ -111,23 +120,27 @@ void ME_VUE_deinit(void)
     s_view.initialized = false;
 }
 
+/* À chaque tick : applique les changements d'écran en attente. */
 void ME_VUE_process(void)
 {
     if (!s_view.initialized) return;
     process_pending_transition((uint32_t)lv_tick_get());
 }
 
+/* Rafraîchit les labels depuis le modèle (voir view_screens_update). */
 void ME_VUE_update(const view_model_data_t *model)
 {
     if (!s_view.initialized || !model) return;
     view_screens_update(model);
 }
 
+/* Remonte un événement sans détail (wrapper). */
 void ME_VUE_send_event(uint32_t event_id)
 {
     ME_VUE_send_event_data(event_id, NULL);
 }
 
+/* Appelle le callback configuré (même chemin que screens_send_event côté LVGL). */
 void ME_VUE_send_event_data(uint32_t event_id,
                                          const view_event_data_t *event_data)
 {
@@ -136,6 +149,7 @@ void ME_VUE_send_event_data(uint32_t event_id,
     }
 }
 
+/* Enchaîne les écrans dans l'ordre défini (bouton « suivant » / swipe gauche). */
 void ME_VUE_show_next_screen(void)
 {
     view_screen_id_t next = VIEW_SCREEN_HOME;
@@ -151,6 +165,7 @@ void ME_VUE_show_next_screen(void)
     ME_VUE_show_screen(next, VIEW_TRANSITION_SLIDE_LEFT, 0);
 }
 
+/* Programme un écran (immédiat si delay_ms == 0). */
 void ME_VUE_show_screen(view_screen_id_t screen_id,
                                      view_transition_t transition,
                                      uint32_t delay_ms)
@@ -176,6 +191,7 @@ void *ME_VUE_get_display(void)
     return s_display;
 }
 
+/* Ordre circulaire inverse pour swipe droite / retour logique. */
 static void show_previous_screen(void)
 {
     view_screen_id_t prev = VIEW_SCREEN_HOME;
@@ -206,6 +222,7 @@ static void show_previous_screen(void)
     ME_VUE_show_screen(prev, VIEW_TRANSITION_SLIDE_RIGHT, 0);
 }
 
+/* Navigation par défaut si l'appli ne fournit pas de callback personnalisé. */
 static void default_view_event_cb(uint32_t event_id,
                                   const view_event_data_t *event_data,
                                   void *user_data)

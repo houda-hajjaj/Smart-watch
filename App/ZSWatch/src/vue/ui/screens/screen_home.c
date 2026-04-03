@@ -1,6 +1,12 @@
+/**
+ * @file screen_home.c
+ * @brief Cadran principal : heure, date, pas, raccourcis vers météo / BLE / capteurs / activité.
+ */
+
 #include "../components/screens_internal.h"
 #include "../components/styles.h"
 
+/* Construit s_home : barre d'état, arc, labels horodatage + boutons de navigation. */
 void screen_home_create(void)
 {
     lv_obj_t *dial, *ring, *row, *btn, *label;
