@@ -1,5 +1,16 @@
 # ZSWatch BLE Sensor Project
 
+
+Notes: There are 2 `branches` in our project: 
+- `main`branch: contains the main application code for the smartwatch prototype, including sensor integration, BLE services, and UI. All the code here is broken down into smaller parts for easier management, clarity, and maintainability.
+
+- `Timer_X` branch: This code snippet is my attempt to optimize for the Model View Controller (MVC) model. The main idea is to separate the concerns of data acquisition (Model), user interface (View), and application logic (Controller) more clearly. In this branch, we have refactored the code to better align with MVC principles, which should improve modularity and maintainability.
+
+
+
+
+#
+
 This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using an **nRF5340 DK** and an **ST IKS01A3 shield**. It runs on **Zephyr RTOS** (nRF Connect SDK v3.1.0) and demonstrates periodic sensor data transmission over BLE using standard GATT services.
 
 ## Features
