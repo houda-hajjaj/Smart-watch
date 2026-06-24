@@ -366,7 +366,7 @@ Install:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/NguyenPhuong242/Smart_Watch.git
+git clone https://github.com/houda-hajjaj/Smart-watch.git
 
 cd Smart_Watch
 ```
