@@ -77,5 +77,5 @@ This repository contains the firmware for a fully functional smartwatch prototyp
 Clone the repository and initialize the environment (if not already done):
 
 ```bash
-git clone https://github.com/NguyenPhuong242/Smart_Watch.git
+git clone https://github.com/houda-hajjaj/Smart-watch.git
 cd Smart_Watch
