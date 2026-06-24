@@ -1,86 +1,81 @@
-# ZSWatch BLE Sensor Project
+# ZSWatch – BLE Smartwatch on nRF5340 / Zephyr RTOS
 
+This repository contains the firmware for a fully functional smartwatch prototype developed as part of an embedded systems course. The project runs on the **Nordic nRF5340 DK** and leverages the **Zephyr RTOS** (nRF Connect SDK v3.1.0). It integrates environmental and motion sensors, provides advanced on‑device signal processing, and exposes sensor data via Bluetooth Low Energy using standard and custom GATT services.
 
-Notes: There are 2 `branches` in our project: 
-- `main`branch: contains the main application code for the smartwatch prototype, including sensor integration, BLE services, and UI. All the code here is broken down into smaller parts for easier management, clarity, and maintainability.
+---
 
-- `Timer_X` branch: This code snippet is my attempt to optimize for the Model View Controller (MVC) model. The main idea is to separate the concerns of data acquisition (Model), user interface (View), and application logic (Controller) more clearly. In this branch, we have refactored the code to better align with MVC principles, which should improve modularity and maintainability.
+## Repository Branches
 
+| Branch      | Description                                                                                          |
+|-------------|------------------------------------------------------------------------------------------------------|
+| `main`      | Main application code (sensors, BLE, UI). Modular design for readability and maintainability.        |
+| `Timer_X`   | Experimental refactoring toward a **Model‑View‑Controller (MVC)** architecture.                      |
 
+> The `main` branch is the stable version; `Timer_X` is a work in progress exploring clearer separation of data acquisition (Model), user interface (View), and application logic (Controller).
 
+---
 
-#
+## Hardware Overview
 
-This project implements a Bluetooth Low Energy (BLE) smartwatch prototype using an **nRF5340 DK** and an **ST IKS01A3 shield**. It runs on **Zephyr RTOS** (nRF Connect SDK v3.1.0) and demonstrates periodic sensor data transmission over BLE using standard GATT services.
+- **MCU**: nRF5340 DK (dual‑core Cortex‑M33)  
+- **Sensor Shield**: X‑NUCLEO‑IKS01A3  
+  - LSM6DSO (accelerometer + gyroscope)  
+  - LIS2MDL (magnetometer)  
+  - HTS221 (temperature + humidity)  
+  - LPS22HH (barometric pressure)  
+- **Display**: Adafruit 2.8″ TFT touchscreen (ILI9341)  
+- **RTC**: External RV‑8263‑C8 (I²C)  
 
-## Features
-- **Hardware**: nRF5340 DK (application core) + X-NUCLEO-IKS01A3 shield (LSM6DSO, LIS2MDL, HTS221, LPS22HH).
-- **Sensor drivers**: Periodic reading of temperature, humidity, pressure, acceleration, and magnetic field.
-- **BLE implementation**:
-  - Environmental Sensing Service (ESS, UUID 0x181A) with standard characteristics:
-    - Temperature (0x2A6E)
-    - Humidity (0x2A6F)
-    - Pressure (0x2A6D)
-    - 3-axis accelerometer (0x2AA1)
-    - 3-axis magnetometer (0x2AA0)
-  - Notifications enabled for all characteristics.
-  - Device name: "ZSWatch".
-- **Robust communication**: Increased BLE buffers, proper CCC handling, and dual-core setup (network core runs `hci_ipc`).
+---
 
-```text
-CMake arguments:
--DSHIELD=x_nucleo_iks01a3, adafruit_2_8_tft
-```
+## Software Features
 
-## Status
-- Sensors initialise correctly (I2C).
-- BLE advertising and connection functional.
-- Notifications sent every 2 seconds with scaled sensor values.
-- Tested with nRF Connect for Mobile - data appears in real-time after subscribing.
+### Core System
+- Multi‑threaded real‑time pipeline with deterministic 100 ms cycle  
+- Threads: acquisition, processing, BLE, UI, RTC, power management  
+- Semaphore‑based synchronization and mutex‑protected shared data  
 
-# ZSWatch Project Log
+### Sensor Processing
+- **Step counter** (state‑machine, adaptive thresholds)  
+- **Distance & calories** (stride length, activity‑dependent coefficients)  
+- **Barometric altimeter** (pressure‑to‑altitude conversion with reference setting)  
+- **Floor counter** (altitude change detection)  
+- **Digital compass** (heading from magnetometer, cardinal direction conversion)  
+- **3D orientation** (Madgwick filter fusion of accelerometer, gyroscope, magnetometer)  
+- **Fall detection** (impact threshold + post‑impact inactivity)  
+- **Activity classification** (rest, walking, running based on acceleration magnitude)  
+- **Weather trend analysis** (linear regression on pressure history)  
 
-This is a short log of the first development weeks.
+### Bluetooth Low Energy (BLE)
+- **Standard GATT service** – Environmental Sensing (UUID 0x181A)  
+  - Temperature (0x2A6E), Humidity (0x2A6F), Pressure (0x2A6D)  
+- **Custom GATT service** – Motion (UUID 12345678‑1234‑5678‑1234‑56789abc0000)  
+  - Accelerometer (0004), Magnetometer (0005), Step counter (0006)  
+- **Notifications** per characteristic with CCC handling  
+- **Advertising** name: `Smart Watch Sensor Hub`  
+- Dual‑core architecture: network core runs `hci_ipc` for BLE controller  
 
-## Week 1-2 - Initialize project and configuration
+### Power Management
+- Inactivity timer (30 s) triggers sleep mode (thread suspension)  
+- Motion‑triggered wake‑up (step or fall detection)  
+- LED indicator for BLE connection state  
 
-- Created the project structure and initialized the repository.
-- Set up the Zephyr / nRF Connect SDK environment; added `CMakeLists.txt` and `prj.conf` for the `nrf5340dk` target.
-- Performed an initial build with `west build` to verify the toolchain and resolve dependencies.
-- Outcome: initial build succeeded and base configuration validated.
+### User Interface
+- **LVGL** – graphical UI with screens: home, weather, compass, activity, BLE status  
+- Touch and button event handling  
+- Real‑time update of sensor and system data on display  
 
-## Week 3-4 - Finish sensors and USART
+---
 
-- Integrated sensor drivers (altimeter, compass, `mag_sensor`, `env_sensor`, `motion_sensor`, `step_counter`) and configured I2C/SPI.
-- Implemented periodic read routines and unit conversions for temperature, pressure, humidity, acceleration, and magnetism.
-- Added a USART debug channel to log readings and simplify hardware debugging.
-- Hardware tests confirmed stable readings and initial calibrations.
+## Build & Flash Instructions
 
-## Week 5-6 - BLE
+### Prerequisites
+- nRF Connect SDK v3.1.0 (or compatible Zephyr version)  
+- West tool, CMake, Ninja, and a suitable ARM toolchain  
 
-- Implemented the main BLE services (Environmental Sensing Service and related characteristics).
-- Enabled notifications to periodically send measurements to a connected client.
-- Tuned BLE buffers and handled CCC properly to improve notification reliability.
-- Tested with nRF Connect (mobile): device discovery, connection, and notification reception working.
+### Setup
+Clone the repository and initialize the environment (if not already done):
 
-## Week 7-8 - Threads, Semaphores and Mutex
-
-- Reorganized the application into several Zephyr threads: initialization, acquisition, UI, BLE, and RTC.
-- Added semaphores to synchronize startup, acquisition timing, BLE updates, and wake-up events between tasks.
-- Introduced mutex protection for shared data structures such as the latest sampled sensor values and BLE state.
-- Outcome: the software architecture became more modular, safer for concurrent access, and easier to debug.
-
-## Week 9-10 - Eco mode - RTC
-
-- Implemented an eco mode based on user inactivity to reduce unnecessary processing during idle periods.
-- Added a lightweight power supervisor to detect inactivity, switch the system into sleep behavior, and wake it on button or touch activity.
-- Linked eco mode with acquisition and display behavior so the watch can pause heavy tasks while remaining responsive.
-- Outcome: improved runtime behavior and a first low-power management strategy for the smartwatch.
-- Integer : RTC extern
-
-## Week 11-12 - UI and touch screen
-
-- Integrated the LVGL-based graphical interface and organized the UI into reusable components and screens.
-- Added navigation logic for splash, home, weather, compass, activity, and BLE status screens.
-- Connected touch and button events to screen changes and user activity detection.
-- Outcome: the prototype now provides a complete visual interface with real-time sensor and BLE feedback on the display.
+```bash
+git clone https://github.com/NguyenPhuong242/Smart_Watch.git
+cd Smart_Watch
