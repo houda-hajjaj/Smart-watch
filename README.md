@@ -1,4 +1,3 @@
-````markdown
 # ZSWatch – BLE Smartwatch on nRF5340 / Zephyr RTOS
 
 A fully functional smartwatch firmware developed as part of an **Embedded Systems** course. The project runs on the **Nordic nRF5340 DK** using the **Zephyr RTOS** (nRF Connect SDK v3.1.0) and integrates multiple environmental and motion sensors, real-time signal processing, Bluetooth Low Energy communication, and a graphical user interface built with LVGL.
